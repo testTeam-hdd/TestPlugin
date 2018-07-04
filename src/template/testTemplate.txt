@@ -1,0 +1,57 @@
+package ${classEntity.scriptPackage};
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import ${classEntity.className};
+
+<#list classEntity.requestParameters as parameterName>
+import  ${parameterName};
+</#list>
+import com.miz.autotest.base.AutoBaseTest;
+import com.miz.testframework.database.DBcheckUtil;
+import com.miz.testframework.objckeck.ObjectCheckUtil;
+import com.miz.testframework.util.CSVUtil;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+/**
+ * @author $author
+ * @date $date
+ */
+public class ${classEntity.scriptClassName} extends AutoBaseTest{
+
+    protected static Logger logger = LoggerFactory.getLogger(${classEntity.scriptClassName}.class);
+
+	@Autowired
+	private ${classEntity.shortClassName} ${classEntity.shortClassName};
+
+	@Autowired
+	private ${classEntity.shortRequestName}Mapper ${classEntity.shortRequestName}Mapper;
+
+
+
+	@Test(dataProvider = "CsvDataProvider", description = "")
+	public void ${classEntity.methodName}(final String caseId, final String description,<#list classEntity.methodParameter as parameter> ${parameter.type}  ${parameter.name}, </#list>int index ) {
+		//请求对象设置
+		Object request1 = CSVUtil.requestfromCSV(reqfile,${classEntity.shortRequestName}.class,0);
+       ${classEntity.shortRequestName} request = (${classEntity.shortRequestName})request1;
+
+		//数据准备
+		try {
+			//方法执行
+			${classEntity.shortClassName}.${classEntity.methodName}(request);
+			//结果校验
+
+		}catch (Exception e){
+			logger.error(e.getMessage());
+			Assert.assertTrue(false);
+		}finally {
+			//数据清理
+
+	}
+
+	}
+}

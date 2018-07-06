@@ -1,7 +1,12 @@
 import com.Utils.MyJPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyDialog extends JDialog {
     private JPanel contentPane;
@@ -24,15 +29,15 @@ public class MyDialog extends JDialog {
     private JPanel childJPanel;
     private JButton addTestCase;
     private JPanel addCaseJPanel;
-    private int inertDbIndex;
-    private int checkDbIndex;
-    private int checkResponseIndex;
+    private JButton save;
+    private int caseIdIndex = 1;
 
     private DialogCallBack mCallBack;
+    private Map<String, String> testCaseMap = new HashMap<>();
 
     public MyDialog(DialogCallBack callBack) {
         this.mCallBack = callBack;
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));//盒子布局.从上到下
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));//盒子布局.从上到下
         setTitle("生成测试用例脚本");
         setContentPane(contentPane);
         setModal(true);
@@ -55,31 +60,11 @@ public class MyDialog extends JDialog {
                 addTestCase();
             }
         });
-//        addResponseCheckData.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                addResponseDate();
-//            }
-//        });
-//        addDbCheckData.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                addDbCheckDate();
-//            }
-//        });
-//        removeDbData.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                removeDbData();
-//            }
-//        });
-//        removeResponseCheckData.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                removeResponseCheckData();
-//            }
-//        });
-//        removeDbCheckData.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                removeDbCheckData();
-//            }
-//        });
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                saveTestCase();
+            }
+        });
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -104,44 +89,42 @@ public class MyDialog extends JDialog {
         dispose();
     }
 
-    private void addTestCase(){
-        addCaseJPanel.setLayout(new BoxLayout(addCaseJPanel, BoxLayout.Y_AXIS));//盒子布局.从上到下
-        addCaseJPanel.add(new MyJPanel());//添加1个自己定义的面板组件
-        addCaseJPanel.add(Box.createVerticalStrut(600));
-        myUpdateUI();//刷新界面
+    //添加测试用例任务触发按钮
+    private void addTestCase() {
+        addCaseJPanel.setLayout(new BoxLayout(addCaseJPanel, BoxLayout.Y_AXIS));//盒子布局
+        JPanel myJPanel = new MyJPanel(this.setCaseId(), addCaseJPanel);
+        myJPanel.setName(this.setCaseId());
+        addCaseJPanel.add(myJPanel);//添加1个自己定义的面板组件
+        addCaseJPanel.revalidate();
+        if (addCaseJPanel.getComponentCount() > 15) {
+            myUpdateUI();//拖动下拉框到底部
+        }
     }
-//
-//    private void addResponseDate(){
-//        checkResponse.add(new MyJPanel(checkResponseIndex));//添加1个自己定义的面板组件
-//        checkResponseIndex++;//自加1
-//        myUpdateUI();//刷新界面
-//    }
-//    private void addDbCheckDate(){
-//        checkDb.add(new MyJPanel(checkDbIndex));//添加1个自己定义的面板组件
-//        checkDbIndex++;//自加1
-//        myUpdateUI();//刷新界面
-//    }
-//    private void removeDbData(){
-//        if (insertDb.getComponentCount() > 0) { // 得到jpc里的MyJPanel的组件数量
-//            insertDb.remove(insertDb.getComponentCount() - 1);//删除末尾的一个组件 ,
-//            inertDbIndex -= 1;
-//            myUpdateUI();
-//        }
-//    }
-//    private void removeResponseCheckData(){
-//        if (checkResponse.getComponentCount() > 0) { // 得到jpc里的MyJPanel的组件数量
-//            checkResponse.remove(checkResponse.getComponentCount() - 1);//删除末尾的一个组件 ,
-//            checkResponseIndex -= 1;
-//            myUpdateUI();
-//        }
-//    }
-//    private void removeDbCheckData(){
-//        if (checkDb.getComponentCount() > 0) { // 得到jpc里的MyJPanel的组件数量
-//            checkDb.remove(checkDb.getComponentCount() - 1);//删除末尾的一个组件 ,
-//            checkDbIndex -= 1;
-//            myUpdateUI();
-//        }
-//    }
+    //保存测试用例
+    private void saveTestCase() {
+        Component[] components = addCaseJPanel.getComponents();
+        List<JPanel> JPanelList = new ArrayList<>();
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                JPanelList.add((JPanel) component);
+            }
+        }
+        for (JPanel jPanel : JPanelList) {
+            String caseid = null;
+            String description = null;
+
+            for (Component component : jPanel.getComponents()) {
+                if (component instanceof JLabel) {
+                    caseid = ((JLabel) component).getText();
+                }
+                if (component instanceof JTextField) {
+                    description = ((JTextField) component).getText();
+                }
+            }
+            testCaseMap.put(caseid, description);
+        }
+    }
+
     private void onCancel() {
         dispose();
     }
@@ -153,6 +136,46 @@ public class MyDialog extends JDialog {
     private void myUpdateUI() {
         JScrollBar jsb = jsp.getVerticalScrollBar();//得到垂直滚动条
         jsb.setValue(jsb.getMaximum());//把滚动条位置设置到最下面
+    }
+
+    //生成caseId
+    private String setCaseId() {
+        String caseId = null;
+        if (addCaseJPanel.getComponentCount() == 0) {
+            caseId = spliceCaseId();
+        } else {
+            caseIdIndex = addCaseJPanel.getComponentCount() + 1;
+            caseId = spliceCaseId();
+            while (!checkCaseId(caseId)) {
+                caseIdIndex++;
+                caseId = spliceCaseId();
+            }
+        }
+        return caseId;
+    }
+
+    //拼接caseId
+    private String spliceCaseId() {
+        String caseId = null;
+        if (caseIdIndex < 10) {
+            caseId = "NO00" + caseIdIndex;
+        } else if (caseIdIndex < 100 && caseIdIndex >= 10) {
+            caseId = "NO0" + caseIdIndex;
+        } else {
+            caseId = "NO" + caseIdIndex;
+        }
+        return caseId;
+    }
+
+    private boolean checkCaseId(String caseId) {
+        Component[] components = addCaseJPanel.getComponents();
+        boolean i = true;
+        for (Component component : components) {
+            if (component.getName().equals(caseId)) {
+                i = false;
+            }
+        }
+        return i;
     }
 
 }

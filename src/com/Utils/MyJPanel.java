@@ -1,6 +1,7 @@
 package com.Utils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -8,39 +9,34 @@ import java.awt.event.ActionListener;
  * dongdong Created by 下午2:29  2018/7/5
  */
 public class MyJPanel extends JPanel {
-    public JTextField jtf;
+    private JTextField jtf;
     private JButton button;
+    private JLabel jLabel;
 
-    public MyJPanel() {
-        jtf = new JTextField(8);
+    public MyJPanel(String caseId, Container container) {
+        jtf = new JTextField(70);
+        jLabel = new JLabel();
+        jLabel.setText(caseId);
         button = new JButton();
         button.setText("删除");
         button.addActionListener(new ActionListener() {
             @Override
+            //删除选中的JPanel
             public void actionPerformed(ActionEvent e) {
-                delete();
+                Component[] components = container.getComponents();
+                for (Component component : components) {
+                    if (component.getName().equals(jLabel.getText())) {
+                        container.remove(component);
+                        container.revalidate();
+                    }
+                }
             }
         });
-        add(jtf);
-        add(button);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));//盒子布局.从上到下
-        this.revalidate();
-    }
-
-    //获取文本框的值
-    public String getJTFValue() {
-        return jtf.getText();
-    }
-
-    //设置文本框的值
-    public void setJTFValue(String value) {
-        jtf.setText(value);
-    }
-
-    private void delete(){
-        this.remove(jtf);
-        this.remove(button);
-        this.revalidate();
+        this.add(jLabel);
+        this.add(jtf);
+        this.add(button);
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));//盒子布局.从左到右
+        this.setMaximumSize(new Dimension(990, 30));
     }
 }
 

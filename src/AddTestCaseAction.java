@@ -26,6 +26,7 @@ public class AddTestCaseAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         project = e.getData(PlatformDataKeys.PROJECT);
+        logger.info("开始初始化插件……");
         init();
         refreshProject(e);
     }

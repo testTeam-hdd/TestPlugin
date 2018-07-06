@@ -30,7 +30,7 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="addTestCase" class="AddTestCaseAction" text="addTestCase" description="this is our dream! ">
+    <action id="addTestCase" class="AddTestCaseAction" text="testScrypt" description="this is our dream! ">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
   </actions>

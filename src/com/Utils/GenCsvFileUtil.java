@@ -67,6 +67,6 @@ public class GenCsvFileUtil {
     }
 
     public static void main(String[] args) {
-//        createCsvForObject();
+        createCsvForObject("lalala",true,"testrequest");
     }
 }

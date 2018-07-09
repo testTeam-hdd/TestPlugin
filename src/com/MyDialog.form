@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="MyDialog">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.MyDialog">
   <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
       <xy x="5" y="34" width="1034" height="879"/>

@@ -1,3 +1,5 @@
+package com;
+
 import com.Utils.MyJPanel;
 
 import javax.swing.*;
@@ -16,7 +18,7 @@ public class MyDialog extends JDialog {
     private JTabbedPane tabbedPane;
     private JRadioButton normal;
     private JRadioButton exception;
-    private JTextField testScryptDescription;
+    private JTextField testScriptDescription;
     private JPanel setTestCase;
     private JPanel setRequest;
     private JPanel setDb;
@@ -84,7 +86,7 @@ public class MyDialog extends JDialog {
 
     private void onOK() {
         if (null != mCallBack) {
-            mCallBack.ok(testScryptDescription.getText().trim(), testClass.getText().trim(), testMethod.getText().trim());
+            mCallBack.ok(testScriptDescription.getText().trim(), testClass.getText().trim(), testMethod.getText().trim());
         }
         dispose();
     }

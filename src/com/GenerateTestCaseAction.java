@@ -1,3 +1,5 @@
+package com;
+
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -12,8 +14,8 @@ import java.util.Date;
 /**
  * dongdong Created by 下午3:18  2018/6/7
  */
-public class AddTestCaseAction extends AnAction {
-    protected static org.slf4j.Logger logger = LoggerFactory.getLogger(AddTestCaseAction.class);
+public class GenerateTestCaseAction extends AnAction {
+    protected static org.slf4j.Logger logger = LoggerFactory.getLogger(GenerateTestCaseAction.class);
 
 
     private Project project;

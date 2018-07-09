@@ -1,6 +1,8 @@
 package com.Utils;
 
 
+import com.miz.testframework.util.CSVUtil;
+
 import java.io.File;
 
 /**
@@ -22,7 +24,7 @@ public class GenCsvFileUtil {
         }
         testAbsolutePath=System.getProperty("user.dir");
         objectcsvPath = testAbsolutePath + "/src/test/resources/testers"+ File.separator+suffix.toLowerCase()+File.separator+methodName+File.separator+objectName+".csv";
-//        CSVUtil.createVerticalCsvForCheck(objectName.getClass(),objectcsvPath);
+        CSVUtil.createVerticalCsvForCheck(objectName.getClass(), objectcsvPath);
 
     }
 
@@ -41,7 +43,7 @@ public class GenCsvFileUtil {
         }
         testAbsolutePath=System.getProperty("user.dir");
         objectcsvPath = testAbsolutePath + "/src/test/resources/testers"+ File.separator+suffix.toLowerCase()+File.separator+methodName+File.separator+objectName+".csv";
-//        CSVUtil.createVerticalCsvForCheck(objectName.getClass(),objectcsvPath);
+        CSVUtil.createVerticalCsvForCheck(objectName.getClass(), objectcsvPath);
 
     }
 
@@ -60,7 +62,7 @@ public class GenCsvFileUtil {
         }
         testAbsolutePath=System.getProperty("user.dir");
         objectcsvPath = testAbsolutePath + "/src/test/resources/testers"+ File.separator+suffix.toLowerCase()+File.separator+methodName+File.separator+objectName+".csv";
-//        CSVUtil.createVerticalCsvForCheck(objectName.getClass(),objectcsvPath);
+        CSVUtil.createVerticalCsvForCheck(objectName.getClass(),objectcsvPath);
 
     }
 

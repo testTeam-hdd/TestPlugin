@@ -1,5 +1,6 @@
 package com;
 
+import com.Utils.GenCsvFileUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -15,7 +16,6 @@ import java.util.Date;
  * dongdong Created by 下午3:18  2018/6/7
  */
 public class GenerateTestCaseAction extends AnAction {
-    protected static org.slf4j.Logger logger = LoggerFactory.getLogger(GenerateTestCaseAction.class);
 
 
     private Project project;
@@ -28,7 +28,6 @@ public class GenerateTestCaseAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         project = e.getData(PlatformDataKeys.PROJECT);
-        logger.info("开始初始化插件……");
         init();
         refreshProject(e);
     }
@@ -52,8 +51,8 @@ public class GenerateTestCaseAction extends AnAction {
                 mAuthor = author;
                 testClassName = TestClassName;
                 testMethodName = TestMethodName;
-                logger.info("生成文件字段录入完成！mAuthor:{},testClassName:{},testMethodName:{}", mAuthor, testClassName, testMethodName);
                 createClassFiles();
+                GenCsvFileUtil.createCsvForObject(testMethodName,true,"TransfeeBo",project);
                 Messages.showInfoMessage(project, "脚本生成成功!", "提示");
             }
         });
@@ -89,7 +88,6 @@ public class GenerateTestCaseAction extends AnAction {
     private String getAppPath() {
         String packagePath = packageName.replace(".", "/");
         String path = project.getBasePath() + "/" + packagePath + testClassName;
-        logger.info("当前包路径为：" + path);
         return path;
     }
 
@@ -171,29 +169,22 @@ public class GenerateTestCaseAction extends AnAction {
      */
     private void writeToFile(String content, String classPath, String className) {
         try {
-            logger.info("获取文件内容成功：" + content);
             File floder = new File(classPath);
             if (!floder.exists()) {
-                logger.info("目标文件夹不存在，生成目标文件夹……");
                 floder.mkdirs();
-                logger.info("生辰目标文件夹成功！" + floder);
             }
 
             File file = new File(classPath + "/" + className);
             if (!file.exists()) {
-                logger.info("目标文件不存在，生成目标文件……");
                 file.createNewFile();
-                logger.info("生辰目标文件夹成功！" + file);
             }
 
             FileWriter fw = new FileWriter(file.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(content);
             bw.close();
-            logger.info("文件写入成功！");
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("文件生成失败，", e);
         }
 
     }

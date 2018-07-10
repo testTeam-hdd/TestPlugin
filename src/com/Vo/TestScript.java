@@ -1,7 +1,8 @@
-package com.entry;
+package com.Vo;
 
 import clojure.lang.Obj;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,11 +12,56 @@ public class TestScript {
     private String testClass;
     private String testMethod;
     private String testScriptDescription;
+    private String testPackageName;
     private List<String> dbList;
     private Object request;
     private Object response;
     private List<String> dbCheckList;
     private String packageName;
+    private String requestPackageName;
+    private String responsePackageName;
+    private String author;
+    private Date date;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String $author) {
+        this.author = $author;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(String $date) {
+        this.date = date;
+    }
+
+    public String getRequestPackageName() {
+        return requestPackageName;
+    }
+
+    public void setRequestPackageName(String requestPackageName) {
+        this.requestPackageName = requestPackageName;
+    }
+
+    public String getResponsePackageName() {
+        return responsePackageName;
+    }
+
+    public void setResponsePackageName(String responsePackageName) {
+        this.responsePackageName = responsePackageName;
+    }
+
+    public String getTestPackageName() {
+        return testPackageName;
+    }
+
+    public void setTestPackageName(String testPackageName) {
+        this.testPackageName = testPackageName;
+    }
 
     public String getPackageName() {
         return packageName;

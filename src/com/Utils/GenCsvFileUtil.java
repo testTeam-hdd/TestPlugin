@@ -1,6 +1,7 @@
 package com.Utils;
 
 
+import com.intellij.openapi.project.Project;
 import com.miz.testframework.util.CSVUtil;
 
 import java.io.File;
@@ -13,7 +14,7 @@ public class GenCsvFileUtil {
      * 根据对象生成csv文件
      */
 
-    public static void createCsvForObject(String methodName,Boolean isNormal,String objectName){
+    public static void createCsvForObject(String methodName,Boolean isNormal,String objectName,Project project){
         String suffix;
         String objectcsvPath;
         String testAbsolutePath;
@@ -22,7 +23,8 @@ public class GenCsvFileUtil {
         }else{
             suffix="FuncException";
         }
-        testAbsolutePath=System.getProperty("user.dir");
+        testAbsolutePath = project.getBasePath();
+//        testAbsolutePath=System.getProperty("user.dir");
         objectcsvPath = testAbsolutePath + "/src/test/resources/testers"+ File.separator+suffix.toLowerCase()+File.separator+methodName+File.separator+objectName+".csv";
         CSVUtil.createVerticalCsvForCheck(objectName.getClass(), objectcsvPath);
 
@@ -66,7 +68,7 @@ public class GenCsvFileUtil {
 
     }
 
-    public static void main(String[] args) {
-        createCsvForObject("lalala",true,"testrequest");
-    }
+//    public static void main(String[] args) {
+//        createCsvForObject("lalala",true,"testrequest");
+//    }
 }

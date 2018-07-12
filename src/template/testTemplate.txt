@@ -55,3 +55,8 @@ public class ${classEntity.scriptClassName} extends AutoBaseTest{
 
 	}
 }
+BorrowSyncAccountLogic
+syncAccount
+BorrowerLogic
+getBorrowerOrSaveBorrower
+BorrowerBo

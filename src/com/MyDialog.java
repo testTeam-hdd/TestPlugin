@@ -1,6 +1,8 @@
 package com;
 
 import com.Utils.MyJPanel;
+import com.Vo.RequestParam;
+import com.Vo.TestScript;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +37,7 @@ public class MyDialog extends JDialog {
     private int caseIdIndex = 1;
 
     private DialogCallBack mCallBack;
+    private TestScript testScript = new TestScript();
     private Map<String, String> testCaseMap = new HashMap<>();
 
     public MyDialog(DialogCallBack callBack) {
@@ -46,29 +49,15 @@ public class MyDialog extends JDialog {
         getRootPane().setDefaultButton(buttonOK);
         setSize(1000, 1000);
         setLocationRelativeTo(null);
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
-        addTestCase.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addTestCase();
-            }
-        });
-        save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                saveTestCase();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
 
-        // call onCancel() when cross is clicked
+        buttonCancel.addActionListener(e -> onCancel());
+
+        addTestCase.addActionListener(e -> addTestCase());
+
+        save.addActionListener(e -> saveTestCase());
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -76,17 +65,34 @@ public class MyDialog extends JDialog {
             }
         });
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void onOK() {
         if (null != mCallBack) {
-            mCallBack.ok(testScriptDescription.getText().trim(), testClass.getText().trim(), testMethod.getText().trim());
+            this.testScript.setTestScriptDescription(testScriptDescription.getText().trim());
+            this.testScript.setTestClass(testClass.getText().trim());
+            this.testScript.setTestMethod(testMethod.getText().trim());
+            Map<String, String> map = new HashMap<>();
+            Map<String, String> mapResponse = new HashMap<>();
+            List<RequestParam> list1 = new ArrayList<>();
+            RequestParam requestParam1 = new RequestParam();
+            requestParam1.setType("Object");
+            requestParam1.setValue("BorrowerBo");
+            list1.add(requestParam1);
+            mapResponse.put("Object", "BorrowerBo");
+            List<String> list = new ArrayList<String>() {};
+            List<String> list2 = new ArrayList<String>() {};
+            list.add("borrowDb");
+            list.add("lendDb");
+            list2.add("borrowDbCheck");
+            list2.add("lendDbCheck");
+            testScript.setDbCheckList(list2);
+            testScript.setAuthor("dongdong");
+            testScript.setDbList(list);
+            testScript.setRequest(list1);
+            testScript.setResponse(mapResponse);
+            mCallBack.ok(this.testScript);
         }
         dispose();
     }
@@ -132,7 +138,7 @@ public class MyDialog extends JDialog {
     }
 
     public interface DialogCallBack {
-        void ok(String author, String testClassName, String testMethodName);
+        void ok(TestScript testScript);
     }
 
     private void myUpdateUI() {

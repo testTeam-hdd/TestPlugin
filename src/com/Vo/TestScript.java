@@ -1,9 +1,8 @@
 package com.Vo;
 
-import clojure.lang.Obj;
-
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * dongdong Created by 下午3:13  2018/7/9
@@ -14,8 +13,8 @@ public class TestScript {
     private String testScriptDescription;
     private String testPackageName;
     private List<String> dbList;
-    private Object request;
-    private Object response;
+    private List<RequestParam> request;
+    private Map<String, String> response;
     private List<String> dbCheckList;
     private String packageName;
     private String requestPackageName;
@@ -103,19 +102,19 @@ public class TestScript {
         this.dbList = dbList;
     }
 
-    public Object getRequest() {
+    public List<RequestParam> getRequest() {
         return request;
     }
 
-    public void setRequest(Object request) {
+    public void setRequest(List<RequestParam> request) {
         this.request = request;
     }
 
-    public Object getResponse() {
+    public Map<String, String> getResponse() {
         return response;
     }
 
-    public void setResponse(Object response) {
+    public void setResponse(Map<String, String> response) {
         this.response = response;
     }
 

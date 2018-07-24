@@ -8,12 +8,12 @@ import java.awt.event.ActionListener;
 /**
  * dongdong Created by 下午2:29  2018/7/5
  */
-public class MyJPanel extends JPanel {
+public class AddTestCaseJPanel extends JPanel {
     private JTextField jtf;
     private JButton button;
     private JLabel jLabel;
 
-    public MyJPanel(String caseId, Container container) {
+    public AddTestCaseJPanel(String caseId, Container container) {
         jtf = new JTextField(70);
         jLabel = new JLabel();
         jLabel.setText(caseId);

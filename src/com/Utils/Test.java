@@ -5,7 +5,7 @@ package com.Utils;
  */
 public class Test {
     public static void main(String[] args){
-        String obj = "MyJPanel";
+        String obj = "AddTestCaseJPanel";
 //        Class<String> myJPanelClass = obj.getClass();
     }
 }

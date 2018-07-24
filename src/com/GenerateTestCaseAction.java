@@ -24,6 +24,7 @@ public class GenerateTestCaseAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         project = e.getData(PlatformDataKeys.PROJECT);
         generate();
+
         refreshProject(e);
     }
 

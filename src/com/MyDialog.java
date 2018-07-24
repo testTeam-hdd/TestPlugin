@@ -1,6 +1,6 @@
 package com;
 
-import com.Utils.MyJPanel;
+import com.Utils.AddTestCaseJPanel;
 import com.Vo.RequestParam;
 import com.Vo.TestScript;
 
@@ -18,8 +18,6 @@ public class MyDialog extends JDialog {
     private JButton buttonCancel;
     private JScrollPane jsp;
     private JTabbedPane tabbedPane;
-    private JRadioButton normal;
-    private JRadioButton exception;
     private JTextField testScriptDescription;
     private JPanel setTestCase;
     private JPanel setRequest;
@@ -28,21 +26,25 @@ public class MyDialog extends JDialog {
     private JPanel setDbCheck;
     private JTextField testClass;
     private JTextField testMethod;
-    private JPanel midJPanel;
-    private JPanel chooseJPanel;
     private JPanel childJPanel;
     private JButton addTestCase;
     private JPanel addCaseJPanel;
     private JButton save;
+    private JPanel addRequest;
+    private JRadioButton normal;
+    private JRadioButton exception;
+    private JPanel scriptParam;
     private int caseIdIndex = 1;
 
     private DialogCallBack mCallBack;
-    private TestScript testScript = new TestScript();
+
     private Map<String, String> testCaseMap = new HashMap<>();
 
     public MyDialog(DialogCallBack callBack) {
         this.mCallBack = callBack;
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));//盒子布局.从上到下
+        childJPanel.setLayout(new BoxLayout(childJPanel, BoxLayout.Y_AXIS));//盒子布局.从上到下
+        scriptParam.setLayout(new BoxLayout(scriptParam,BoxLayout.Y_AXIS));
         setTitle("生成测试用例脚本");
         setContentPane(contentPane);
         setModal(true);
@@ -50,7 +52,11 @@ public class MyDialog extends JDialog {
         setSize(1000, 1000);
         setLocationRelativeTo(null);
 
-        buttonOK.addActionListener(e -> onOK());
+        buttonOK.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
 
         buttonCancel.addActionListener(e -> onCancel());
 
@@ -69,10 +75,11 @@ public class MyDialog extends JDialog {
     }
 
     private void onOK() {
+        TestScript testScript = new TestScript();
         if (null != mCallBack) {
-            this.testScript.setTestScriptDescription(testScriptDescription.getText().trim());
-            this.testScript.setTestClass(testClass.getText().trim());
-            this.testScript.setTestMethod(testMethod.getText().trim());
+            testScript.setTestScriptDescription(testScriptDescription.getText().trim());
+            testScript.setTestClass(testClass.getText().trim());
+            testScript.setTestMethod(testMethod.getText().trim());
             Map<String, String> map = new HashMap<>();
             Map<String, String> mapResponse = new HashMap<>();
             List<RequestParam> list1 = new ArrayList<>();
@@ -92,7 +99,7 @@ public class MyDialog extends JDialog {
             testScript.setDbList(list);
             testScript.setRequest(list1);
             testScript.setResponse(mapResponse);
-            mCallBack.ok(this.testScript);
+            mCallBack.ok(testScript);
         }
         dispose();
     }
@@ -100,7 +107,7 @@ public class MyDialog extends JDialog {
     //添加测试用例任务触发按钮
     private void addTestCase() {
         addCaseJPanel.setLayout(new BoxLayout(addCaseJPanel, BoxLayout.Y_AXIS));//盒子布局
-        JPanel myJPanel = new MyJPanel(this.setCaseId(), addCaseJPanel);
+        JPanel myJPanel = new AddTestCaseJPanel(this.setCaseId(), addCaseJPanel);
         myJPanel.setName(this.setCaseId());
         addCaseJPanel.add(myJPanel);//添加1个自己定义的面板组件
         addCaseJPanel.revalidate();
@@ -135,6 +142,10 @@ public class MyDialog extends JDialog {
 
     private void onCancel() {
         dispose();
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
     public interface DialogCallBack {

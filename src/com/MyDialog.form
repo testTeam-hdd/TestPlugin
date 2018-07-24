@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.MyDialog">
-  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+  <grid id="cbd77" binding="contentPane" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
     <constraints>
-      <xy x="5" y="34" width="1214" height="841"/>
+      <xy x="5" y="34" width="1224" height="851"/>
     </constraints>
     <properties/>
     <border type="none">
@@ -11,7 +11,7 @@
     <children>
       <grid id="73cc2" binding="childJPanel" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints border-constraint="North"/>
+        <constraints/>
         <properties/>
         <border type="none"/>
         <children>
@@ -53,7 +53,7 @@
               <title-color color="-16382458"/>
             </border>
             <children>
-              <grid id="77352" binding="scriptParam" custom-create="true" layout-manager="GridLayoutManager" row-count="3" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="10">
+              <grid id="77352" binding="scriptParam" layout-manager="GridLayoutManager" row-count="3" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="10">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <tabbedpane title="测试脚本参数"/>

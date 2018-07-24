@@ -35,7 +35,7 @@ public class MyDialog extends JDialog {
     private JRadioButton exception;
     private JPanel scriptParam;
     private int caseIdIndex = 1;
-
+    private TestScript testScript = new TestScript();
     private DialogCallBack mCallBack;
 
     private Map<String, String> testCaseMap = new HashMap<>();
@@ -52,11 +52,7 @@ public class MyDialog extends JDialog {
         setSize(1000, 1000);
         setLocationRelativeTo(null);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
 
         buttonCancel.addActionListener(e -> onCancel());
 
@@ -75,7 +71,6 @@ public class MyDialog extends JDialog {
     }
 
     private void onOK() {
-        TestScript testScript = new TestScript();
         if (null != mCallBack) {
             testScript.setTestScriptDescription(testScriptDescription.getText().trim());
             testScript.setTestClass(testClass.getText().trim());

@@ -11,7 +11,7 @@
       <preferredSize width="1100" height="720"/>
     </properties>
     <border type="none" title-justification="2">
-      <title-color color="-16382458"/>
+      <title-color color="-65794"/>
     </border>
     <children>
       <tabbedpane id="f64b" binding="tabbedPane">
@@ -200,14 +200,13 @@
               <scrollpane id="2eb06" binding="jsp">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="1050" height="600"/>
                     <preferred-size width="1050" height="600"/>
                     <maximum-size width="1050" height="600"/>
                   </grid>
                 </constraints>
                 <properties>
                   <autoscrolls value="false"/>
-                  <doubleBuffered value="true"/>
+                  <doubleBuffered value="false"/>
                 </properties>
                 <border type="line">
                   <color color="-4473925"/>
@@ -217,7 +216,7 @@
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints/>
                     <properties>
-                      <autoscrolls value="true"/>
+                      <autoscrolls value="false"/>
                       <maximumSize width="12345678" height="12345678"/>
                       <minimumSize width="24" height="24"/>
                       <preferredSize width="24" height="24"/>

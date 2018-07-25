@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.MyDialog">
-  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="20">
     <constraints>
-      <xy x="179" y="85" width="1100" height="720"/>
+      <xy x="179" y="85" width="1100" height="725"/>
     </constraints>
     <properties>
       <autoscrolls value="true"/>
@@ -20,15 +20,16 @@
           <autoscrolls value="true"/>
           <font swing-font="TextField.font"/>
           <opaque value="true"/>
+          <preferredSize width="1100" height="728"/>
           <tabLayoutPolicy value="0"/>
           <tabPlacement value="1"/>
         </properties>
-        <border type="etched" title-justification="5" title-position="2">
+        <border type="line">
           <font size="16" style="0"/>
           <title-color color="-16382458"/>
         </border>
         <children>
-          <grid id="9057" binding="scriptParam" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="5">
+          <grid id="9057" binding="scriptParam" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="测试脚本参数" noi18n="true"/>
@@ -37,22 +38,22 @@
               <autoscrolls value="true"/>
               <font size="16"/>
               <inheritsPopupMenu value="false"/>
-              <maximumSize width="920" height="700"/>
-              <minimumSize width="920" height="700"/>
-              <preferredSize width="920" height="700"/>
+              <maximumSize width="1070" height="700"/>
+              <minimumSize width="1070" height="700"/>
+              <preferredSize width="1070" height="700"/>
               <toolTipText value="设置脚本相关参数"/>
             </properties>
             <border type="none">
               <font/>
             </border>
             <children>
-              <grid id="c1a07" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="c1a07" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="2" use-parent-layout="false">
-                    <minimum-size width="900" height="200"/>
-                    <preferred-size width="900" height="200"/>
-                    <maximum-size width="900" height="200"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="2" use-parent-layout="false">
+                    <minimum-size width="1050" height="200"/>
+                    <preferred-size width="1050" height="200"/>
+                    <maximum-size width="1050" height="200"/>
                   </grid>
                 </constraints>
                 <properties/>
@@ -109,11 +110,6 @@
                     </constraints>
                     <properties/>
                   </component>
-                  <hspacer id="dd495">
-                    <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                  </hspacer>
                   <grid id="8bc32" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
@@ -183,10 +179,10 @@
             </constraints>
             <properties>
               <autoscrolls value="true"/>
-              <maximumSize width="960" height="700"/>
-              <minimumSize width="960" height="700"/>
-              <opaque value="false"/>
-              <preferredSize width="960" height="700"/>
+              <maximumSize width="1050" height="700"/>
+              <minimumSize width="1050" height="700"/>
+              <opaque value="true"/>
+              <preferredSize width="1050" height="700"/>
             </properties>
             <border type="none" title-position="6">
               <font/>
@@ -203,23 +199,28 @@
               </component>
               <scrollpane id="2eb06" binding="jsp">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <minimum-size width="1050" height="600"/>
+                    <preferred-size width="1050" height="600"/>
+                    <maximum-size width="1050" height="600"/>
+                  </grid>
                 </constraints>
                 <properties>
                   <autoscrolls value="false"/>
+                  <doubleBuffered value="true"/>
                 </properties>
-                <border type="empty" title-justification="2" title-position="2">
+                <border type="line">
                   <color color="-4473925"/>
                 </border>
                 <children>
-                  <grid id="63fbd" binding="addCaseJPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="5">
-                    <margin top="5" left="0" bottom="0" right="0"/>
+                  <grid id="63fbd" binding="addCaseJPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints/>
                     <properties>
                       <autoscrolls value="true"/>
-                      <maximumSize width="915" height="10000"/>
-                      <minimumSize width="915" height="800"/>
-                      <preferredSize width="915" height="-1"/>
+                      <maximumSize width="12345678" height="12345678"/>
+                      <minimumSize width="24" height="24"/>
+                      <preferredSize width="24" height="24"/>
                     </properties>
                     <border type="none"/>
                     <children/>

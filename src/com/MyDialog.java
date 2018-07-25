@@ -48,7 +48,7 @@ public class MyDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        setSize(1000, 1000);
+        setSize(1100, 750);
         setLocationRelativeTo(null);
 //        tabbedPane.setTabLayoutPolicy();
 

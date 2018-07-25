@@ -36,7 +36,7 @@ public class AddTestCaseJPanel extends JPanel {
         this.add(jtf);
         this.add(button);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));//盒子布局.从左到右
-        this.setMaximumSize(new Dimension(880, 35));
+        this.setMaximumSize(new Dimension(980, 35));
     }
 }
 

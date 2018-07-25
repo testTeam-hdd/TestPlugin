@@ -1,330 +1,369 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.MyDialog">
-  <grid id="cbd77" binding="contentPane" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="5" y="34" width="1224" height="851"/>
+      <xy x="179" y="85" width="1100" height="720"/>
     </constraints>
-    <properties/>
-    <border type="none">
+    <properties>
+      <autoscrolls value="true"/>
+      <maximumSize width="1100" height="720"/>
+      <minimumSize width="1100" height="720"/>
+      <preferredSize width="1100" height="720"/>
+    </properties>
+    <border type="none" title-justification="2">
       <title-color color="-16382458"/>
     </border>
     <children>
-      <grid id="73cc2" binding="childJPanel" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints/>
-        <properties/>
-        <border type="none"/>
+      <tabbedpane id="f64b" binding="tabbedPane">
+        <constraints border-constraint="West"/>
+        <properties>
+          <autoscrolls value="true"/>
+          <font swing-font="TextField.font"/>
+          <opaque value="true"/>
+          <tabLayoutPolicy value="0"/>
+          <tabPlacement value="1"/>
+        </properties>
+        <border type="etched" title-justification="5" title-position="2">
+          <font size="16" style="0"/>
+          <title-color color="-16382458"/>
+        </border>
         <children>
-          <component id="2c4f3" class="javax.swing.JButton" binding="buttonOK">
+          <grid id="9057" binding="scriptParam" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="5">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <tabbedpane title="测试脚本参数" noi18n="true"/>
+            </constraints>
+            <properties>
+              <autoscrolls value="true"/>
+              <font size="16"/>
+              <inheritsPopupMenu value="false"/>
+              <maximumSize width="920" height="700"/>
+              <minimumSize width="920" height="700"/>
+              <preferredSize width="920" height="700"/>
+              <toolTipText value="设置脚本相关参数"/>
+            </properties>
+            <border type="none">
+              <font/>
+            </border>
+            <children>
+              <grid id="c1a07" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="2" use-parent-layout="false">
+                    <minimum-size width="900" height="200"/>
+                    <preferred-size width="900" height="200"/>
+                    <maximum-size width="900" height="200"/>
+                  </grid>
+                </constraints>
+                <properties/>
+                <border type="none" title-justification="2"/>
+                <children>
+                  <component id="a85fc" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <text value="   脚本描述  "/>
+                    </properties>
+                  </component>
+                  <component id="a140d" class="javax.swing.JTextField" binding="testScriptDescription">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="790" height="35"/>
+                      </grid>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="7531c" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <text value="   测试方法  "/>
+                    </properties>
+                  </component>
+                  <component id="642b8" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font size="16" style="1"/>
+                      <text value="   测试接口  "/>
+                    </properties>
+                  </component>
+                  <component id="70690" class="javax.swing.JTextField" binding="testClass">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="790" height="35"/>
+                      </grid>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="75a" class="javax.swing.JTextField" binding="testMethod">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="790" height="35"/>
+                      </grid>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <hspacer id="dd495">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </hspacer>
+                  <grid id="8bc32" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="true">
+                        <minimum-size width="400" height="40"/>
+                        <preferred-size width="400" height="40"/>
+                        <maximum-size width="400" height="40"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <autoscrolls value="true"/>
+                      <font size="16"/>
+                      <toolTipText value="设置脚本相关参数"/>
+                    </properties>
+                    <border type="none" title-justification="1" title-position="2">
+                      <font/>
+                    </border>
+                    <children>
+                      <component id="379d7" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font size="16" style="1"/>
+                          <text value="  正常异常场景  "/>
+                        </properties>
+                      </component>
+                      <component id="dabbd" class="javax.swing.JRadioButton" binding="normal">
+                        <constraints>
+                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <enabled value="true"/>
+                          <font size="16"/>
+                          <text value="正常"/>
+                        </properties>
+                      </component>
+                      <component id="ef347" class="javax.swing.JRadioButton" binding="exception">
+                        <constraints>
+                          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <font size="16"/>
+                          <text value="异常"/>
+                        </properties>
+                      </component>
+                      <hspacer id="daab5">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                      <hspacer id="9d93a">
+                        <constraints>
+                          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                      </hspacer>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="501e0" binding="setTestCase" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="测试用例设置"/>
+            </constraints>
+            <properties>
+              <autoscrolls value="true"/>
+              <maximumSize width="960" height="700"/>
+              <minimumSize width="960" height="700"/>
+              <opaque value="false"/>
+              <preferredSize width="960" height="700"/>
+            </properties>
+            <border type="none" title-position="6">
+              <font/>
+              <title-color color="-65794"/>
+            </border>
+            <children>
+              <component id="87d30" class="javax.swing.JButton" binding="addTestCase">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="添加用例"/>
+                </properties>
+              </component>
+              <scrollpane id="2eb06" binding="jsp">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <autoscrolls value="false"/>
+                </properties>
+                <border type="empty" title-justification="2" title-position="2">
+                  <color color="-4473925"/>
+                </border>
+                <children>
+                  <grid id="63fbd" binding="addCaseJPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="5">
+                    <margin top="5" left="0" bottom="0" right="0"/>
+                    <constraints/>
+                    <properties>
+                      <autoscrolls value="true"/>
+                      <maximumSize width="915" height="10000"/>
+                      <minimumSize width="915" height="800"/>
+                      <preferredSize width="915" height="-1"/>
+                    </properties>
+                    <border type="none"/>
+                    <children/>
+                  </grid>
+                </children>
+              </scrollpane>
+              <hspacer id="f47a9">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <component id="a99a2" class="javax.swing.JButton" binding="save">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="保存用例"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="cfcac" binding="setRequest" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="0">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="接口请求参数设置"/>
+            </constraints>
+            <properties>
+              <autoscrolls value="true"/>
+              <maximumSize width="960" height="700"/>
+              <minimumSize width="960" height="700"/>
+              <preferredSize width="960" height="700"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="6bbc1">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none">
+                  <color color="-4473925"/>
+                </border>
+                <children>
+                  <grid id="a57f2" binding="addRequest" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="true" same-size-vertically="true" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints/>
+                    <properties>
+                      <autoscrolls value="true"/>
+                      <maximumSize width="-1" height="-1"/>
+                      <minimumSize width="-1" height="-1"/>
+                      <preferredSize width="-1" height="-1"/>
+                    </properties>
+                    <border type="none"/>
+                    <children/>
+                  </grid>
+                </children>
+              </scrollpane>
+              <component id="86999" class="javax.swing.JButton">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="添加接口参数"/>
+                </properties>
+              </component>
+              <hspacer id="b280e">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+            </children>
+          </grid>
+          <grid id="2fd1d" binding="setDb" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="db数据设置"/>
+            </constraints>
+            <properties>
+              <maximumSize width="960" height="700"/>
+              <minimumSize width="960" height="700"/>
+              <preferredSize width="960" height="700"/>
+            </properties>
+            <border type="none">
+              <title-color color="-4473925"/>
+            </border>
+            <children/>
+          </grid>
+          <grid id="b0e6e" binding="setResponse" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="响应对象设置"/>
+            </constraints>
+            <properties>
+              <maximumSize width="960" height="700"/>
+              <minimumSize width="960" height="700"/>
+              <preferredSize width="960" height="700"/>
+            </properties>
+            <border type="none"/>
+            <children/>
+          </grid>
+          <grid id="cd41" binding="setDbCheck" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="dbCheck设置"/>
+            </constraints>
+            <properties>
+              <maximumSize width="960" height="700"/>
+              <minimumSize width="960" height="700"/>
+              <preferredSize width="960" height="700"/>
+            </properties>
+            <border type="none"/>
+            <children/>
+          </grid>
+        </children>
+      </tabbedpane>
+      <grid id="b119a" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none" title-justification="3" title-position="5"/>
+        <children>
+          <component id="12f4f" class="javax.swing.JButton" binding="buttonOK">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="OK"/>
             </properties>
           </component>
-          <component id="8bd64" class="javax.swing.JButton" binding="buttonCancel">
+          <component id="87e0" class="javax.swing.JButton" binding="buttonCancel">
             <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
               <text value="Cancel"/>
             </properties>
           </component>
-          <hspacer id="b0673">
+          <hspacer id="9b294">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <tabbedpane id="1945a" binding="tabbedPane">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="1" use-parent-layout="false">
-                <minimum-size width="1200" height="800"/>
-                <preferred-size width="1200" height="800"/>
-                <maximum-size width="1200" height="800"/>
-              </grid>
-            </constraints>
-            <properties>
-              <tabLayoutPolicy value="1"/>
-              <tabPlacement value="2"/>
-            </properties>
-            <border type="etched" title-justification="5" title-position="2">
-              <font size="16" style="0"/>
-              <title-color color="-16382458"/>
-            </border>
-            <children>
-              <grid id="77352" binding="scriptParam" layout-manager="GridLayoutManager" row-count="3" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="10">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <tabbedpane title="测试脚本参数"/>
-                </constraints>
-                <properties>
-                  <autoscrolls value="true"/>
-                  <font size="16"/>
-                  <toolTipText value="设置脚本相关参数"/>
-                </properties>
-                <border type="none">
-                  <font/>
-                </border>
-                <children>
-                  <hspacer id="10141">
-                    <constraints>
-                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                  </hspacer>
-                  <vspacer id="ebe93">
-                    <constraints>
-                      <grid row="1" column="3" row-span="2" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                  </vspacer>
-                  <grid id="ec039" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="2" use-parent-layout="false">
-                        <minimum-size width="1000" height="200"/>
-                        <preferred-size width="1000" height="200"/>
-                        <maximum-size width="1000" height="200"/>
-                      </grid>
-                    </constraints>
-                    <properties/>
-                    <border type="none" title-justification="2"/>
-                    <children>
-                      <component id="6c544" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <font size="16"/>
-                          <text value="      脚本描述"/>
-                        </properties>
-                      </component>
-                      <component id="8a0ac" class="javax.swing.JTextField" binding="testScriptDescription">
-                        <constraints>
-                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                            <minimum-size width="850" height="35"/>
-                            <preferred-size width="600" height="35"/>
-                          </grid>
-                        </constraints>
-                        <properties/>
-                      </component>
-                      <component id="48ee1" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <font size="16"/>
-                          <text value="      测试方法"/>
-                        </properties>
-                      </component>
-                      <component id="43601" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <font size="16"/>
-                          <text value="      测试接口"/>
-                        </properties>
-                      </component>
-                      <component id="30254" class="javax.swing.JTextField" binding="testClass">
-                        <constraints>
-                          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                            <minimum-size width="850" height="35"/>
-                            <preferred-size width="600" height="35"/>
-                          </grid>
-                        </constraints>
-                        <properties/>
-                      </component>
-                      <component id="d95f7" class="javax.swing.JTextField" binding="testMethod">
-                        <constraints>
-                          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                            <minimum-size width="850" height="35"/>
-                            <preferred-size width="600" height="35"/>
-                          </grid>
-                        </constraints>
-                        <properties/>
-                      </component>
-                      <hspacer id="d79db">
-                        <constraints>
-                          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                      </hspacer>
-                      <grid id="d421" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                        <margin top="0" left="0" bottom="0" right="0"/>
-                        <constraints>
-                          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="true">
-                            <minimum-size width="400" height="40"/>
-                            <preferred-size width="400" height="40"/>
-                            <maximum-size width="400" height="40"/>
-                          </grid>
-                        </constraints>
-                        <properties>
-                          <autoscrolls value="true"/>
-                          <font size="16"/>
-                          <toolTipText value="设置脚本相关参数"/>
-                        </properties>
-                        <border type="none" title-justification="1" title-position="2">
-                          <font/>
-                        </border>
-                        <children>
-                          <component id="486b6" class="javax.swing.JLabel">
-                            <constraints>
-                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <font size="16"/>
-                              <text value="     正常异常场景"/>
-                            </properties>
-                          </component>
-                          <component id="53a5" class="javax.swing.JRadioButton" binding="normal">
-                            <constraints>
-                              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <enabled value="true"/>
-                              <font size="16"/>
-                              <text value="正常"/>
-                            </properties>
-                          </component>
-                          <component id="54528" class="javax.swing.JRadioButton" binding="exception">
-                            <constraints>
-                              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                            </constraints>
-                            <properties>
-                              <font size="16"/>
-                              <text value="异常"/>
-                            </properties>
-                          </component>
-                        </children>
-                      </grid>
-                    </children>
-                  </grid>
-                </children>
-              </grid>
-              <grid id="5094a" binding="setTestCase" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <tabbedpane title="测试用例设置"/>
-                </constraints>
-                <properties/>
-                <border type="none" title-position="6">
-                  <font/>
-                  <title-color color="-4473925"/>
-                </border>
-                <children>
-                  <component id="42e37" class="javax.swing.JButton" binding="addTestCase">
-                    <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="添加用例"/>
-                    </properties>
-                  </component>
-                  <scrollpane id="cd9a" binding="jsp">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <preferred-size width="1000" height="800"/>
-                        <maximum-size width="1000" height="800"/>
-                      </grid>
-                    </constraints>
-                    <properties/>
-                    <border type="line">
-                      <color color="-4473925"/>
-                    </border>
-                    <children>
-                      <grid id="c415c" binding="addCaseJPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                        <margin top="0" left="0" bottom="0" right="0"/>
-                        <constraints/>
-                        <properties/>
-                        <border type="none"/>
-                        <children/>
-                      </grid>
-                    </children>
-                  </scrollpane>
-                  <hspacer id="a488d">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                  </hspacer>
-                  <component id="98cb0" class="javax.swing.JButton" binding="save">
-                    <constraints>
-                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="保存用例"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
-              <grid id="e7317" binding="setRequest" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <tabbedpane title="接口请求参数设置"/>
-                </constraints>
-                <properties/>
-                <border type="none"/>
-                <children>
-                  <scrollpane id="6a423">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <preferred-size width="1000" height="800"/>
-                        <maximum-size width="1000" height="800"/>
-                      </grid>
-                    </constraints>
-                    <properties/>
-                    <border type="line">
-                      <color color="-4473925"/>
-                    </border>
-                    <children>
-                      <grid id="2670e" binding="addRequest" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
-                        <margin top="0" left="0" bottom="0" right="0"/>
-                        <constraints/>
-                        <properties/>
-                        <border type="none"/>
-                        <children/>
-                      </grid>
-                    </children>
-                  </scrollpane>
-                  <component id="b2f86" class="javax.swing.JButton">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="添加接口参数"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
-              <grid id="b8ee0" binding="setDb" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <tabbedpane title="db数据设置"/>
-                </constraints>
-                <properties/>
-                <border type="none">
-                  <title-color color="-4473925"/>
-                </border>
-                <children/>
-              </grid>
-              <grid id="92748" binding="setResponse" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <tabbedpane title="响应对象设置"/>
-                </constraints>
-                <properties/>
-                <border type="none"/>
-                <children/>
-              </grid>
-              <grid id="b20ad" binding="setDbCheck" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <tabbedpane title="dbCheck设置"/>
-                </constraints>
-                <properties/>
-                <border type="none"/>
-                <children/>
-              </grid>
-            </children>
-          </tabbedpane>
         </children>
       </grid>
     </children>

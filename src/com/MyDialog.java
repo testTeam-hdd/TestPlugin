@@ -5,6 +5,7 @@ import com.Vo.RequestParam;
 import com.Vo.TestScript;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -17,23 +18,22 @@ public class MyDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JScrollPane jsp;
-    private JTabbedPane tabbedPane;
     private JTextField testScriptDescription;
-    private JPanel setTestCase;
-    private JPanel setRequest;
-    private JPanel setDb;
-    private JPanel setResponse;
-    private JPanel setDbCheck;
     private JTextField testClass;
     private JTextField testMethod;
-    private JPanel childJPanel;
     private JButton addTestCase;
     private JPanel addCaseJPanel;
     private JButton save;
-    private JPanel addRequest;
+    private JTabbedPane tabbedPane;
+    private JPanel scriptParam;
     private JRadioButton normal;
     private JRadioButton exception;
-    private JPanel scriptParam;
+    private JPanel setTestCase;
+    private JPanel setRequest;
+    private JPanel addRequest;
+    private JPanel setDb;
+    private JPanel setResponse;
+    private JPanel setDbCheck;
     private int caseIdIndex = 1;
     private TestScript testScript = new TestScript();
     private DialogCallBack mCallBack;
@@ -42,15 +42,15 @@ public class MyDialog extends JDialog {
 
     public MyDialog(DialogCallBack callBack) {
         this.mCallBack = callBack;
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));//盒子布局.从上到下
-        childJPanel.setLayout(new BoxLayout(childJPanel, BoxLayout.Y_AXIS));//盒子布局.从上到下
-        scriptParam.setLayout(new BoxLayout(scriptParam,BoxLayout.Y_AXIS));
+//        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));//盒子布局.从上到下
+//        scriptParam.setLayout(new BoxLayout(scriptParam,BoxLayout.Y_AXIS));
         setTitle("生成测试用例脚本");
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setSize(1000, 1000);
         setLocationRelativeTo(null);
+//        tabbedPane.setTabLayoutPolicy();
 
         buttonOK.addActionListener(e -> onOK());
 
@@ -68,6 +68,7 @@ public class MyDialog extends JDialog {
         });
 
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+//        setLookAndFeel(this);
     }
 
     private void onOK() {
@@ -105,7 +106,7 @@ public class MyDialog extends JDialog {
         JPanel myJPanel = new AddTestCaseJPanel(this.setCaseId(), addCaseJPanel);
         myJPanel.setName(this.setCaseId());
         addCaseJPanel.add(myJPanel);//添加1个自己定义的面板组件
-        addCaseJPanel.revalidate();
+        addCaseJPanel.revalidate();//刷新窗体
         if (addCaseJPanel.getComponentCount() > 15) {
             myUpdateUI();//拖动下拉框到底部
         }
@@ -190,6 +191,23 @@ public class MyDialog extends JDialog {
             }
         }
         return i;
+    }
+    private void setLookAndFeel(Component component){
+        try{
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//            String lookAndFeel = "com.sun.java.swing.plaf.mac.MacLookAndFeel";
+//            String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+//            String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
+            String lookAndFeel = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+
+//            String lookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
+            UIManager.setLookAndFeel(lookAndFeel);
+            SwingUtilities.updateComponentTreeUI(component);
+
+        }catch (Exception e){
+
+            e.getStackTrace();
+        }
     }
 
 }

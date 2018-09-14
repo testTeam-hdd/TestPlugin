@@ -1,40 +1,43 @@
 package com.tasks;
 
 import com.Utils.EmptyUtils;
-import com.Vo.RequestParam;
 import com.Vo.TestScript;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * dongdong Created by 下午3:34  2018/7/9
  */
 public class GenerateTestScript {
-    private String testClass;
-    private String testMethod;
-    private String testScriptDescription;
-    private List<String> dbList;
-    private List<RequestParam> request;
-    private Map<String, String> response;
-    private List<String> dbCheckList;
-    private String packageName;
-    private String testPackageName;
-    private String requestPackageName;
-    private String responsePackageName;
-    private String author;
-    private Date date;
-    private int requestIndex;
+
+    public static final String[] TYPE = {"byte", "int", "double", "char", "float", "long", "short", "boolean", "String", "void"};
+
+    private String testClass;//测试类
+    private String testMethod;//测试方法
+    private String testScriptDescription;//测试脚本描述
+    private List<String> dbList;//需要插入的db数据列表
+    private Map<String, String> allRequestParem;//被测接口的所有请求参数
+    private List<String> request;//请求类型为对象的请求对象集合
+    private Object response;//响应对象
+    private List<String> dbCheckList;//需要校验的数据对象列表
+    private String packageName;//测试类包名
+    private String testPackageName;//被测试类包名
+    private List<String> requestPackageName;//请求对象包名集合
+    private String responsePackageName;//响应对象包名
+    private String author;//作者
+    private Date date;//日期
     private String centent;
 
     public GenerateTestScript(TestScript testScript) {
         this.dbCheckList = testScript.getDbCheckList();
         this.dbList = testScript.getDbList();
-        this.request = testScript.getRequest();
-        this.response = testScript.getResponse();
         this.testClass = testScript.getTestClass();
         this.testMethod = testScript.getTestMethod();
         this.testScriptDescription = testScript.getTestScriptDescription();
@@ -44,6 +47,9 @@ public class GenerateTestScript {
         this.responsePackageName = testScript.getResponsePackageName();
         this.author = testScript.getAuthor();
         this.date = new Date();
+        this.request = testScript.getRequest();
+        this.response = testScript.getResponse();
+        this.allRequestParem = testScript.getAllRequestParem();
     }
 
     private void spliceScript() {
@@ -71,26 +77,28 @@ public class GenerateTestScript {
         if (dbCheckList.size() != 0) {
             sb.append("import com.miz.testframework.database.DBcheckUtil;");
         }
-        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(response)) {
+            sb.append("\r\n");
             sb.append("import com.miz.testframework.objckeck.ObjectCheckUtil;");
         }
-        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(responsePackageName)) {
+            sb.append("\r\n");
             sb.append("import ");
             sb.append(responsePackageName);
             sb.append(";");
         }
-        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(request)) {
+            sb.append("\r\n");
             sb.append("import com.miz.testframework.util.CSVUtil;");
         }
-        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(requestPackageName)) {
+            sb.append("\r\n");
+            for (String requestPackage : requestPackageName) {
                 sb.append("import ");
-                sb.append(requestPackageName);
+                sb.append(requestPackage);
                 sb.append(";");
                 sb.append("\r\n");
+            }
         }
         sb.append("/**");
         sb.append("\r\n");
@@ -128,21 +136,18 @@ public class GenerateTestScript {
             sb.append("final String ");
             sb.append("response,");
         }
-        if (!EmptyUtils.isEmpty(request)) {
-            int index = 1;
-            for (RequestParam req : request) {
-                if (req.getType().equals("Object")) {
-                    sb.append("final String ");
-                    sb.append("request");
-                    sb.append(",");
-                    requestIndex = index;
-                } else {
+        if (!EmptyUtils.isEmpty(allRequestParem)) {
+            for (String key : allRequestParem.keySet()) {
+                if (Arrays.asList(TYPE).contains(key)) {
                     sb.append("final ");
-                    sb.append(req.getType());
-                    sb.append(" request");
-                    sb.append(index);
+                    sb.append(key);
+                    sb.append(allRequestParem.get(key));
                     sb.append(",");
-                    index++;
+                } else {
+                    sb.append("final String");
+                    sb.append(" ");
+                    sb.append(subString(key));
+                    sb.append(",");
                 }
             }
         }
@@ -163,16 +168,18 @@ public class GenerateTestScript {
         sb.append("int index ) {");
         sb.append("\r\n");
         if (!EmptyUtils.isEmpty(request)) {
-            for (RequestParam req : request) {
-                if (req.getType().equals("Object")) {
-                    sb.append("\t\t");
-                    sb.append(req.getValue());
-                    sb.append(" ");
-                    sb.append(subString(req.getValue()));
-                    sb.append("= CSVUtil.requestfromCSV(request,");
-                    sb.append(req.getValue());
-                    sb.append(".class,index);");
-                }
+            for (String req : request) {
+                sb.append("\t\t");
+                sb.append(req);
+                sb.append(" ");
+                sb.append("my");
+                sb.append(req);
+                sb.append("= CSVUtil.requestfromCSV(");
+                sb.append(subString(req));
+                sb.append(",");
+                sb.append(req);
+                sb.append(".class,index);");
+                sb.append("\r\n");
             }
         }
         sb.append("\r\n");
@@ -180,52 +187,50 @@ public class GenerateTestScript {
         sb.append("\r\n");
         sb.append("\t\ttry {");
         sb.append("\r\n");
+        sb.append("\t\t\t");
         if (!EmptyUtils.isEmpty(response)) {
-            for (String req : response.keySet()) {
-                sb.append("\t\t\t");
-                if (req.equals("Object")) {
-                    sb.append(response.get(req));
-                    sb.append(" ");
-                    sb.append("my");
-                    sb.append(subString(response.get(req)));
-                    sb.append(" = ");
-                } else {
-                    sb.append(req);
-                    sb.append(" myResponse");
-                    sb.append(" = ");
-                }
+            if (Arrays.asList(TYPE).contains(response)) {
+                sb.append(response);
+                sb.append(" ");
+                sb.append("myResponse");
+                sb.append(" = ");
+            } else {
+                sb.append(response);
+                sb.append(" ");
+                sb.append("my");
+                sb.append(response);
+                sb.append(" ");
+                sb.append(" = ");
             }
+
         }
         sb.append(subString(testClass));
         sb.append(".");
         sb.append(testMethod);
         sb.append("(");
-        for (int i = 1; i <= request.size(); i++) {
-            if (i == requestIndex) {
-                for (RequestParam req : request) {
-                    if (req.getType().equals("Object")) {
-                        sb.append(subString(req.getValue()));
-                    }
-                }
-            }else{
-                sb.append("request");
-                sb.append(i);
+        for (String key : allRequestParem.keySet()) {
+            int requestIndex = 1;
+            if (Arrays.asList(TYPE).contains(key)) {
+                sb.append(allRequestParem.get(key));
+            } else {
+                sb.append("my");
+                sb.append(key);
             }
-            if (!(i == request.size())) {
+            if (!(requestIndex == allRequestParem.size())) {
                 sb.append(",");
             }
+
+            requestIndex += 1;
         }
         sb.append(");\r\n");
         if (!EmptyUtils.isEmpty(response)) {
             sb.append("\t\t\tAssert.assertTrue(ObjectCheckUtil.check(");
             sb.append("response,");
-            for (String req : response.keySet()) {
-                if (req.equals("Object")) {
-                    sb.append("my");
-                    sb.append(subString(response.get(req)));
-                } else {
-                    sb.append("myResponse");
-                }
+            if (!Arrays.asList(TYPE).contains(response)) {
+                sb.append("my");
+                sb.append(response);
+            } else {
+                sb.append("myResponse");
             }
             sb.append(",");
             sb.append("index));\r\n");
@@ -248,20 +253,19 @@ public class GenerateTestScript {
         sb.append("}\r\n");
         this.centent = sb.toString();
     }
+
     /**
      * 生成测试脚本
      *
      * @param classPath 类文件路径
      * @param className 类文件名称
      */
-    public void writeToFile( String classPath, String className) {
+    public void writeToFile(String classPath, String className) {
         try {
             this.spliceScript();
             File floder = new File(classPath);
             if (!floder.exists()) {
                 floder.mkdirs();
-            }else{
-                classPath.toLowerCase();
             }
 
             File file = new File(classPath + "/" + className);
@@ -281,7 +285,7 @@ public class GenerateTestScript {
 
 
     //首字母转小写
-    private String subString(String str) {
+    public static String subString(String str) {
         char substring = str.substring(0, 1).charAt(0);
         if (Character.isUpperCase(substring)) {
             substring = Character.toLowerCase(substring);

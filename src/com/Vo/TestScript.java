@@ -13,14 +13,33 @@ public class TestScript {
     private String testScriptDescription;
     private String testPackageName;
     private List<String> dbList;
-    private List<RequestParam> request;
-    private Map<String, String> response;
+    private Map<String, String> allRequestParem;
+    private List<String> request;//请求类型为对象的请求对象集合
+    private String response;
     private List<String> dbCheckList;
     private String packageName;
-    private String requestPackageName;
+    private List<String> requestPackageName;
     private String responsePackageName;
     private String author;
+    private boolean isNormal;
     private Date date;
+
+
+    public List<String> getRequest() {
+        return request;
+    }
+
+    public void setRequest(List<String> request) {
+        this.request = request;
+    }
+
+    public boolean getIsNormal() {
+        return isNormal;
+    }
+
+    public void setIsNormal(boolean isNormal) {
+        this.isNormal = isNormal;
+    }
 
     public String getAuthor() {
         return author;
@@ -38,11 +57,11 @@ public class TestScript {
         this.date = date;
     }
 
-    public String getRequestPackageName() {
+    public List<String> getRequestPackageName() {
         return requestPackageName;
     }
 
-    public void setRequestPackageName(String requestPackageName) {
+    public void setRequestPackageName(List<String> requestPackageName) {
         this.requestPackageName = requestPackageName;
     }
 
@@ -102,19 +121,19 @@ public class TestScript {
         this.dbList = dbList;
     }
 
-    public List<RequestParam> getRequest() {
-        return request;
+    public Map<String, String> getAllRequestParem() {
+        return allRequestParem;
     }
 
-    public void setRequest(List<RequestParam> request) {
-        this.request = request;
+    public void setAllRequestParem(Map<String, String> allRequestParem) {
+        this.allRequestParem = allRequestParem;
     }
 
-    public Map<String, String> getResponse() {
+    public String getResponse() {
         return response;
     }
 
-    public void setResponse(Map<String, String> response) {
+    public void setResponse(String response) {
         this.response = response;
     }
 

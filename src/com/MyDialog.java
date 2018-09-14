@@ -1,13 +1,14 @@
 package com;
 
-import com.Utils.AddTestCaseJPanel;
+import com.Utils.AddObjectJPanel;
 import com.Vo.RequestParam;
 import com.Vo.TestScript;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,46 +22,49 @@ public class MyDialog extends JDialog {
     private JTextField testScriptDescription;
     private JTextField testClass;
     private JTextField testMethod;
-    private JButton addTestCase;
-    private JPanel addCaseJPanel;
-    private JButton save;
-    private JTabbedPane tabbedPane;
-    private JPanel scriptParam;
     private JRadioButton normal;
     private JRadioButton exception;
-    private JPanel setTestCase;
-    private JPanel setRequest;
-    private JPanel addRequest;
-    private JPanel setDb;
-    private JPanel setResponse;
-    private JPanel setDbCheck;
+    private JPanel setDataJPanel;
+    private JPanel scriptJPanel;
+    private JButton nextJButton;
+    private JButton previonsJBotton;
+    private JButton DBinsertButton;
+    private JButton DBcheckButton;
+    private JPanel dbInsertJButton;
+    private JPanel dbCheckJButton;
+    private JTextField author;
     private int caseIdIndex = 1;
     private TestScript testScript = new TestScript();
     private DialogCallBack mCallBack;
+    private CardLayout cardLayout = new CardLayout();
 
     private Map<String, String> testCaseMap = new HashMap<>();
 
     public MyDialog(DialogCallBack callBack) {
         this.mCallBack = callBack;
-//        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));//盒子布局.从上到下
-//        scriptParam.setLayout(new BoxLayout(scriptParam,BoxLayout.Y_AXIS));
         setTitle("生成测试用例脚本");
         setContentPane(contentPane);
+        contentPane.setLayout(cardLayout);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setSize(1100, 750);
         setLocationRelativeTo(null);
-//        tabbedPane.setTabLayoutPolicy();
+        setJradio();
 
         buttonOK.addActionListener(e -> onOK());
 
         buttonCancel.addActionListener(e -> onCancel());
 
-        addTestCase.addActionListener(e -> addTestCase());
+        nextJButton.addActionListener(e -> next());
 
-        save.addActionListener(e -> saveTestCase());
+        previonsJBotton.addActionListener(e -> previons());
+
+        DBinsertButton.addActionListener(e -> addButton(dbInsertJButton));
+
+        DBcheckButton.addActionListener(e -> addButton(dbCheckJButton));
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onCancel();
@@ -68,7 +72,6 @@ public class MyDialog extends JDialog {
         });
 
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-//        setLookAndFeel(this);
     }
 
     private void onOK() {
@@ -76,68 +79,69 @@ public class MyDialog extends JDialog {
             testScript.setTestScriptDescription(testScriptDescription.getText().trim());
             testScript.setTestClass(testClass.getText().trim());
             testScript.setTestMethod(testMethod.getText().trim());
-            Map<String, String> map = new HashMap<>();
-            Map<String, String> mapResponse = new HashMap<>();
-            List<RequestParam> list1 = new ArrayList<>();
-            RequestParam requestParam1 = new RequestParam();
-            requestParam1.setType("Object");
-            requestParam1.setValue("BorrowerBo");
-            list1.add(requestParam1);
-            mapResponse.put("Object", "BorrowerBo");
-            List<String> list = new ArrayList<String>() {};
-            List<String> list2 = new ArrayList<String>() {};
-            list.add("borrowDb");
-            list.add("lendDb");
-            list2.add("borrowDbCheck");
-            list2.add("lendDbCheck");
-            testScript.setDbCheckList(list2);
-            testScript.setAuthor("dongdong");
-            testScript.setDbList(list);
-            testScript.setRequest(list1);
-            testScript.setResponse(mapResponse);
+            testScript.setAuthor(author.getText().trim());
+            testScript.setIsNormal(normal.isSelected() ? true : false);
+            testScript.setDbCheckList(getButtonList(dbCheckJButton));
+            testScript.setDbList(getButtonList(dbInsertJButton));
             mCallBack.ok(testScript);
         }
         dispose();
     }
 
-    //添加测试用例任务触发按钮
-    private void addTestCase() {
-        addCaseJPanel.setLayout(new BoxLayout(addCaseJPanel, BoxLayout.Y_AXIS));//盒子布局
-        JPanel myJPanel = new AddTestCaseJPanel(this.setCaseId(), addCaseJPanel);
-        myJPanel.setName(this.setCaseId());
-        addCaseJPanel.add(myJPanel);//添加1个自己定义的面板组件
-        addCaseJPanel.revalidate();//刷新窗体
-        if (addCaseJPanel.getComponentCount() > 15) {
+    private void setJradio() {
+        //将按钮添加到组，否则按钮会支持多选
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(normal);
+        buttonGroup.add(exception);
+        normal.setSelected(true);
+    }
+
+    private void addButton(Container container) {
+        dbInsertJButton.setLayout(new BoxLayout(dbInsertJButton, BoxLayout.Y_AXIS));
+        dbCheckJButton.setLayout(new BoxLayout(dbCheckJButton, BoxLayout.Y_AXIS));
+        String index = setIndex(container);
+        JPanel myJPanl = new AddObjectJPanel(index, container, 540, 30);
+        myJPanl.setName(index);
+        container.add(myJPanl);
+        container.revalidate();
+        if (container.getComponentCount() > 15) {
             myUpdateUI();//拖动下拉框到底部
         }
     }
-    //保存测试用例
-    private void saveTestCase() {
-        Component[] components = addCaseJPanel.getComponents();
+
+    private List<String> getButtonList(Container container){
+        Component[] components = container.getComponents();
         List<JPanel> JPanelList = new ArrayList<>();
+        List<String> ObjectList = new ArrayList<>();
         for (Component component : components) {
             if (component instanceof JPanel) {
                 JPanelList.add((JPanel) component);
             }
         }
         for (JPanel jPanel : JPanelList) {
-            String caseid = null;
             String description = null;
 
             for (Component component : jPanel.getComponents()) {
-                if (component instanceof JLabel) {
-                    caseid = ((JLabel) component).getText();
-                }
                 if (component instanceof JTextField) {
                     description = ((JTextField) component).getText();
                 }
             }
-            testCaseMap.put(caseid, description);
+            ObjectList.add(description);
         }
+        return ObjectList;
     }
+
 
     private void onCancel() {
         dispose();
+    }
+
+    private void next() {
+        cardLayout.next(contentPane);
+    }
+
+    private void previons() {
+        cardLayout.previous(contentPane);
     }
 
     private void createUIComponents() {
@@ -153,61 +157,14 @@ public class MyDialog extends JDialog {
         jsb.setValue(jsb.getMaximum());//把滚动条位置设置到最下面
     }
 
-    //生成caseId
-    private String setCaseId() {
-        String caseId = null;
-        if (addCaseJPanel.getComponentCount() == 0) {
-            caseId = spliceCaseId();
+    private String setIndex(Container component) {
+        String index = null;
+        if (component.getComponentCount() == 0) {
+            index = "01";
         } else {
-            caseIdIndex = addCaseJPanel.getComponentCount() + 1;
-            caseId = spliceCaseId();
-            while (!checkCaseId(caseId)) {
-                caseIdIndex++;
-                caseId = spliceCaseId();
-            }
+            int newindex = component.getComponentCount() + 1;
+            index = newindex<10?"0"+Integer.valueOf(newindex).toString():Integer.valueOf(newindex).toString();
         }
-        return caseId;
+        return index;
     }
-
-    //拼接caseId
-    private String spliceCaseId() {
-        String caseId = null;
-        if (caseIdIndex < 10) {
-            caseId = "NO00" + caseIdIndex;
-        } else if (caseIdIndex < 100 && caseIdIndex >= 10) {
-            caseId = "NO0" + caseIdIndex;
-        } else {
-            caseId = "NO" + caseIdIndex;
-        }
-        return caseId;
-    }
-
-    private boolean checkCaseId(String caseId) {
-        Component[] components = addCaseJPanel.getComponents();
-        boolean i = true;
-        for (Component component : components) {
-            if (component.getName().equals(caseId)) {
-                i = false;
-            }
-        }
-        return i;
-    }
-    private void setLookAndFeel(Component component){
-        try{
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//            String lookAndFeel = "com.sun.java.swing.plaf.mac.MacLookAndFeel";
-//            String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-//            String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
-            String lookAndFeel = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-
-//            String lookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
-            UIManager.setLookAndFeel(lookAndFeel);
-            SwingUtilities.updateComponentTreeUI(component);
-
-        }catch (Exception e){
-
-            e.getStackTrace();
-        }
-    }
-
 }

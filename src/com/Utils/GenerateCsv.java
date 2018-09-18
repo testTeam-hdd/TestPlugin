@@ -24,7 +24,7 @@ public class GenerateCsv {
     private List<PsiClass> dbChecks;
     private boolean isNormal;
     private String path;
-    private String testClassName;//测试类类名
+    private String testMethodName;//测试类类名
 
     public GenerateCsv(CsvElementVo csvElementVo) {
         this.requests = csvElementVo.getRequest();
@@ -33,21 +33,22 @@ public class GenerateCsv {
         this.dbInserts = csvElementVo.getDbInsert();
         this.isNormal = csvElementVo.isNormal();
         this.path = csvElementVo.getPath();
-        this.testClassName = csvElementVo.getTestClassName();
+        this.testMethodName = csvElementVo.getTestMethodName();
         getPath();
         generateRequestCsv();
         generateResponseCsv();
         generateDbInsertCsv();
         generateDbCheckCsv();
     }
+
     /**
      * 根据isNormal确定路径
      */
     private void getPath() {
         if (isNormal) {
-            path = path + "normal/" + testClassName + "/";
+            path = path + "normal/" + testMethodName + "/";
         } else {
-            path = path + "funcExp/" + testClassName + "/";
+            path = path + "funcExp/" + testMethodName + "/";
         }
     }
 
@@ -57,10 +58,16 @@ public class GenerateCsv {
     private void generateRequestCsv() {
         String requestPath = null;
         int index = 1;
-        for (PsiClass request : requests) {
-            requestPath = path + "request" + index + "_" + request.getName() + ".csv";
-            createVerticalCsvForCheck(request, requestPath);
-            index++;
+        try {
+            if (requests.size() != 0 && requests != null) {
+                for (PsiClass request : requests) {
+                    requestPath = path + "request" + index + "_" + request.getName() + ".csv";
+                    createVerticalCsvForCheck(request, requestPath);
+                    index++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -70,7 +77,13 @@ public class GenerateCsv {
     private void generateResponseCsv() {
         String responsePath = null;
         responsePath = path + "response.csv";
-        createVerticalCsvForCheck(response, responsePath);
+        try {
+            if (!EmptyUtils.isEmpty(response)) {
+                createVerticalCsvForCheck(response, responsePath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -79,10 +92,16 @@ public class GenerateCsv {
     private void generateDbInsertCsv() {
         String dbInsertPath = null;
         int index = 1;
-        for (PsiClass dbInsert : dbInserts) {
-            dbInsertPath = path + "dbInsert" + index + "_" + dbInsert.getName() + ".csv";
-            createVerticalCsvForCheck(dbInsert, dbInsertPath);
-            index++;
+        try {
+            if (dbInserts.size() != 0 && dbInserts != null) {
+                for (PsiClass dbInsert : dbInserts) {
+                    dbInsertPath = path + "dbInsert" + index + "_" + dbInsert.getName() + ".csv";
+                    createVerticalCsvForCheck(dbInsert, dbInsertPath);
+                    index++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -92,10 +111,16 @@ public class GenerateCsv {
     private void generateDbCheckCsv() {
         String dbCheckPath = null;
         int index = 1;
-        for (PsiClass dbCheck : dbChecks) {
-            dbCheckPath = path + "dbCheck" + index + "_" + dbCheck.getName() + ".csv";
-            createVerticalCsvForCheck(dbCheck, dbCheckPath);
-            index++;
+        try {
+            if (dbChecks.size() != 0 && dbChecks != null) {
+                for (PsiClass dbCheck : dbChecks) {
+                    dbCheckPath = path + "dbCheck" + index + "_" + dbCheck.getName() + ".csv";
+                    createVerticalCsvForCheck(dbCheck, dbCheckPath);
+                    index++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -130,10 +155,10 @@ public class GenerateCsv {
             header.add(className.substring(className.lastIndexOf(".") + 1, className.length()));
             int i = 1;
             for (PsiField filename : fileNames) {
-                if (filename.equals("id") || filename.equals("serialVersionUID")){
+                if (filename.equals("id") || filename.equals("serialVersionUID")) {
                     continue;
                 }
-                if (filename.equals("createTime") || filename.equals("updateTime")){
+                if (filename.equals("createTime") || filename.equals("updateTime")) {
                     continue;
                 }
                 List<String> value = new ArrayList<String>();
@@ -194,10 +219,10 @@ public class GenerateCsv {
             String className = psiClass.getName();
             header.add(className.substring(className.lastIndexOf(".") + 1, className.length()));
             for (PsiField name : fileNames) {
-                if (name.equals("id") || name.equals("serialVersionUID")){
+                if (name.equals("id") || name.equals("serialVersionUID")) {
                     continue;
                 }
-                if (name.equals("createTime") || name.equals("updateTime")){
+                if (name.equals("createTime") || name.equals("updateTime")) {
                     continue;
                 }
                 header.add(name.getName());

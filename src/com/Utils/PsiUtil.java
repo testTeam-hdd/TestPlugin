@@ -16,29 +16,20 @@ import java.util.Map;
 public class PsiUtil {
     //获取PsiClass对象
     public static PsiClass getPsiClass(Project project, String className) {
+        PsiClass psiClass = null;
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
-        PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
-        psiJavaFile.getVirtualFile();
-        String packageName = psiJavaFile.getPackageName();
-//      通过名称查找类名，自测失败
+        if (psiFiles.length == 0) {
+            Messages.showInfoMessage(project, "类名输入错误，未查到该类,请检查后重新填写"+className, "title");
+        } else {
+            PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
+            psiJavaFile.getVirtualFile();
+            String packageName = psiJavaFile.getPackageName();
+//      通过名称查找类名，自测失败\
 //      PsiClass[] psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(packageName+".TransfeeBo", GlobalSearchScope.allScope(project));
-        //通过名称查找类名
-        PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName + "." + className, new EverythingGlobalScope(project));
-        PsiClass psiClass = psiClasses[0];
-        String name = psiClass.getName();
-        PsiField[] a = psiClass.getFields();
-        for(PsiField psiField:a){
-
-            PsiIdentifier psiIdentifier =psiField.getNameIdentifier();
-           String b =  psiField.getName();
-           int i =1;
+            //通过名称查找类名
+            PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName + "." + className, new EverythingGlobalScope(project));
+            psiClass = psiClasses[0];
         }
-        for(PsiField psiField:psiClass.getAllFields()){
-            String c = psiField.getName();
-            int d = 0;
-        }
-
-
 
         return psiClass;
     }
@@ -59,7 +50,7 @@ public class PsiUtil {
             PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
             packageName = psiJavaFile.getPackageName();
         } catch (Exception e) {
-            Messages.showInfoMessage(project, "类名错误，请检查后重新填写", "title");
+            Messages.showInfoMessage(project, "类名错误，请检查后重新填写"+className, "title");
         }
         return packageName;
     }
@@ -102,19 +93,33 @@ public class PsiUtil {
     public static boolean isEnum(PsiType psiType) {
         boolean isEnum = true;
         PsiType superPsiType = psiType.getSuperTypes()[0].getDeepComponentType();
-        if (!superPsiType.getPresentableText().contains("Enum")){
+        if (!superPsiType.getPresentableText().contains("Enum")) {
             isEnum = false;
         }
         return isEnum;
     }
-    //判断是否为枚举类型
+
+
+    //判断是否为集合类型
     public static boolean isCollection(PsiType psiType) {
         boolean isCollection = true;
         PsiType superPsiType = psiType.getSuperTypes()[0].getDeepComponentType();
-        if (!superPsiType.getPresentableText().contains("Collection")){
+        if (!superPsiType.getPresentableText().contains("Collection")) {
             isCollection = false;
         }
         return isCollection;
+    }
+
+    public static String chooseCollection(String type){
+        String collectionType = null;
+        if (type.contains("List")){
+            collectionType = "java.util.List";
+        }else if (type.contains("Map")){
+            collectionType = "java.util.Map";
+        }else if(type.contains("Set")){
+            collectionType = "java.util.Set";
+        }
+        return collectionType;
     }
 }
 //获取类型的包路径

@@ -16,15 +16,15 @@ public class CsvElementVo {
     private List<PsiClass> dbCheck;
     private boolean isNormal;
     private String path;
-    private String testClassName;
+    private String testMethodName;
 
 
-    public String getTestClassName() {
-        return testClassName;
+    public String getTestMethodName() {
+        return testMethodName;
     }
 
-    public void setTestClassName(String testClassName) {
-        this.testClassName = testClassName;
+    public void setTestMethodName(String testMethodName) {
+        this.testMethodName = testMethodName;
     }
 
 

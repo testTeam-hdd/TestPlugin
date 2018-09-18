@@ -1,7 +1,9 @@
 package com.tasks;
 
 import com.Utils.EmptyUtils;
+import com.Utils.PsiUtil;
 import com.Vo.TestScript;
+import com.intellij.psi.PsiType;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,13 +19,13 @@ import java.util.Map;
  */
 public class GenerateTestScript {
 
-    public static final String[] TYPE = {"byte", "int", "double", "char", "float", "long", "short", "boolean", "String", "void"};
+    public static final String[] TYPE = {"byte", "int", "double", "char", "float", "long", "Long", "short", "boolean", "String", "void"};
 
     private String testClass;//测试类
     private String testMethod;//测试方法
     private String testScriptDescription;//测试脚本描述
     private List<String> dbList;//需要插入的db数据列表
-    private Map<String, String> allRequestParem;//被测接口的所有请求参数
+    private Map<PsiType, String> allRequestParem;//被测接口的所有请求参数
     private List<String> request;//请求类型为对象的请求对象集合
     private Object response;//响应对象
     private List<String> dbCheckList;//需要校验的数据对象列表
@@ -31,6 +33,8 @@ public class GenerateTestScript {
     private String testPackageName;//被测试类包名
     private List<String> requestPackageName;//请求对象包名集合
     private String responsePackageName;//响应对象包名
+    private List<String> dbMapperPackageName;//dbMapper对象包名集合
+    private List<String> dbPackageName;//db实体类包名集合
     private String author;//作者
     private Date date;//日期
     private String centent;
@@ -50,6 +54,8 @@ public class GenerateTestScript {
         this.request = testScript.getRequest();
         this.response = testScript.getResponse();
         this.allRequestParem = testScript.getAllRequestParem();
+        this.dbMapperPackageName = testScript.getDbMapperPackageName();
+        this.dbPackageName = testScript.getDbPackageName();
     }
 
     private void spliceScript() {
@@ -72,6 +78,19 @@ public class GenerateTestScript {
         sb.append(testPackageName);
         sb.append(";");
         sb.append("\r\n");
+
+        for (String db:dbMapperPackageName) {
+            sb.append("import ");
+            sb.append(db);
+            sb.append(";\r\n");
+        }
+
+        for (String db:dbPackageName) {
+            sb.append("import ");
+            sb.append(db);
+            sb.append(";\r\n");
+        }
+
         sb.append("import com.miz.autotest.base.AutoBaseTest;");
         sb.append("\r\n");
         if (dbCheckList.size() != 0) {
@@ -126,6 +145,19 @@ public class GenerateTestScript {
         sb.append(subString(testClass));
         sb.append(";");
         sb.append("\r\n");
+
+        for (String db:dbList) {
+            sb.append("\t@Autowired");
+            sb.append("\r\n");
+            sb.append("\tprivate ");
+            sb.append(db);
+            sb.append("Mapper");
+            sb.append(" ");
+            sb.append(subString(db));
+            sb.append("Mapper;");
+            sb.append("\r\n");
+        }
+
         sb.append("\t@Test(dataProvider = \"CsvDataProvider\", description =\"");
         sb.append(testScriptDescription);
         sb.append("\")\r\n");
@@ -137,16 +169,16 @@ public class GenerateTestScript {
             sb.append("response,");
         }
         if (!EmptyUtils.isEmpty(allRequestParem)) {
-            for (String key : allRequestParem.keySet()) {
-                if (Arrays.asList(TYPE).contains(key)) {
+            for (PsiType key : allRequestParem.keySet()) {
+                if (Arrays.asList(TYPE).contains(key.getPresentableText())) {
                     sb.append("final ");
-                    sb.append(key);
+                    sb.append(key.getPresentableText());
                     sb.append(allRequestParem.get(key));
                     sb.append(",");
-                } else {
+                } else if(!Arrays.asList(TYPE).contains(key.getPresentableText())&&!PsiUtil.isEnum(key)&&!PsiUtil.isCollection(key)){
                     sb.append("final String");
                     sb.append(" ");
-                    sb.append(subString(key));
+                    sb.append(subString(key.getPresentableText()));
                     sb.append(",");
                 }
             }
@@ -154,14 +186,14 @@ public class GenerateTestScript {
         if (!EmptyUtils.isEmpty(dbList)) {
             for (String db : dbList) {
                 sb.append("final String ");
-                sb.append(db);
+                sb.append(subString(db));
                 sb.append(",");
             }
         }
         if (!EmptyUtils.isEmpty(dbCheckList)) {
             for (String dbCheck : dbCheckList) {
                 sb.append("final String  ");
-                sb.append(dbCheck);
+                sb.append(subString(dbCheck));
                 sb.append(",");
             }
         }
@@ -185,6 +217,16 @@ public class GenerateTestScript {
         sb.append("\r\n");
         sb.append("\t\tthis.cleanDB();");
         sb.append("\r\n");
+        for (String db:dbList) {
+            sb.append("\t\tsuper.insertDB(");
+            sb.append(subString(db));
+            sb.append(",");
+            sb.append(subString(db));
+            sb.append("Mapper,");
+            sb.append(db);
+            sb.append(".class);");
+            sb.append("\r\n");
+        }
         sb.append("\t\ttry {");
         sb.append("\r\n");
         sb.append("\t\t\t");
@@ -208,13 +250,13 @@ public class GenerateTestScript {
         sb.append(".");
         sb.append(testMethod);
         sb.append("(");
-        for (String key : allRequestParem.keySet()) {
+        for (PsiType key : allRequestParem.keySet()) {
             int requestIndex = 1;
-            if (Arrays.asList(TYPE).contains(key)) {
+            if (Arrays.asList(TYPE).contains(key.getPresentableText())) {
                 sb.append(allRequestParem.get(key));
             } else {
                 sb.append("my");
-                sb.append(key);
+                sb.append(key.getPresentableText());
             }
             if (!(requestIndex == allRequestParem.size())) {
                 sb.append(",");
@@ -237,7 +279,7 @@ public class GenerateTestScript {
         }
         for (String dbCheck : dbCheckList) {
             sb.append("\t\t\tAssert.assertTrue(DBcheckUtil.DBCheckWithoutCondition(");
-            sb.append(dbCheck);
+            sb.append(subString(dbCheck));
             sb.append(", index + 1), \"DB结果校验失败\");\r\n");
         }
         sb.append("\t\t} catch (Exception e) {\r\n");

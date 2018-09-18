@@ -1,5 +1,7 @@
 package com.Vo;
 
+import com.intellij.psi.PsiType;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +15,35 @@ public class TestScript {
     private String testScriptDescription;
     private String testPackageName;
     private List<String> dbList;
-    private Map<String, String> allRequestParem;
+    private Map<PsiType, String> allRequestParem;
     private List<String> request;//请求类型为对象的请求对象集合
     private String response;
     private List<String> dbCheckList;
     private String packageName;
     private List<String> requestPackageName;
+    private List<String> dbMapperPackageName;//dbmapper包名集合
+    private List<String> dbPackageName;//db实体类包名集合
     private String responsePackageName;
     private String author;
     private boolean isNormal;
     private Date date;
+
+
+    public List<String> getDbMapperPackageName() {
+        return dbMapperPackageName;
+    }
+
+    public List<String> getDbPackageName() {
+        return dbPackageName;
+    }
+
+    public void setDbPackageName(List<String> dbPackageName) {
+        this.dbPackageName = dbPackageName;
+    }
+
+    public void setDbMapperPackageName(List<String> dbMapperPackageName) {
+        this.dbMapperPackageName = dbMapperPackageName;
+    }
 
 
     public List<String> getRequest() {
@@ -121,11 +142,11 @@ public class TestScript {
         this.dbList = dbList;
     }
 
-    public Map<String, String> getAllRequestParem() {
+    public Map<PsiType, String> getAllRequestParem() {
         return allRequestParem;
     }
 
-    public void setAllRequestParem(Map<String, String> allRequestParem) {
+    public void setAllRequestParem(Map<PsiType, String> allRequestParem) {
         this.allRequestParem = allRequestParem;
     }
 

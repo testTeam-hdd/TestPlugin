@@ -100,7 +100,7 @@ public class GenerateCsv {
             if (dbInserts.size() != 0 && dbInserts != null) {
                 for (PsiClass dbInsert : dbInserts) {
                     dbInsertPath = path + "dbInsert" + index + "_" + dbInsert.getName() + ".csv";
-                    createVerticalCsvForCheck(dbInsert, dbInsertPath);
+                    createTransverseCsvForCheck(dbInsert, dbInsertPath);
                     index++;
                 }
             }
@@ -315,7 +315,7 @@ public class GenerateCsv {
             content.add("NO001");
             content.add("");
             if (!EmptyUtils.isEmpty(testScript.getResponse())) {
-                header.add(GenerateCsv.getCsvPath("response.csv", testScript));
+                header.add(GenerateCsv.getCsvPath("response", testScript));
             }
             if (!EmptyUtils.isEmpty(testScript.getAllRequestParem())) {
                 int index = 1;

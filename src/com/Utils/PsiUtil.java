@@ -1,5 +1,6 @@
 package com.Utils;
 
+import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
@@ -19,7 +20,7 @@ public class PsiUtil {
         PsiClass psiClass = null;
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
         if (psiFiles.length == 0) {
-            Messages.showInfoMessage(project, "类名输入错误，未查到该类,请检查后重新填写"+className, "title");
+            Messages.showInfoMessage(project, "类名输入错误，未查到该类,请检查后重新填写" + className, "title");
         } else {
             PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
             psiJavaFile.getVirtualFile();
@@ -29,6 +30,10 @@ public class PsiUtil {
             //通过名称查找类名
             PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName + "." + className, new EverythingGlobalScope(project));
             psiClass = psiClasses[0];
+//            PsiModifierList c = psiClass.getModifierList();
+//            PsiAnnotation[] a = psiClass.getModifierList().getAnnotations();
+//            PsiAnnotation d = AnnotationUtil.findAnnotation(psiClass,true,"@Table");
+//            int b = 1;
         }
 
         return psiClass;
@@ -50,9 +55,30 @@ public class PsiUtil {
             PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
             packageName = psiJavaFile.getPackageName();
         } catch (Exception e) {
-            Messages.showInfoMessage(project, "类名错误，请检查后重新填写"+className, "title");
+            Messages.showInfoMessage(project, "类名错误，请检查后重新填写" + className, "title");
         }
         return packageName;
+    }
+
+    //获取Psitype
+    public static PsiType getPsiType(Project project, String className) {
+        PsiType psiType = PsiType.getTypeByName(className, project, GlobalSearchScope.EMPTY_SCOPE);
+        return psiType;
+    }
+
+    //获取表名
+    public static String getTableName(Project project, String className) {
+        String tableName = null;
+        PsiType psiType = PsiUtil.getPsiType(project, className);
+        PsiAnnotation[] a = psiType.getAnnotations();
+//        String psi1 = psiType.getAnnotations()[0].getQualifiedName();
+        for (PsiAnnotation psiAnnotation : psiType.getAnnotations()) {
+            PsiJavaCodeReferenceElement psiJavaCodeReferenceElement = psiAnnotation.getNameReferenceElement();
+            PsiAnnotationOwner psiAnnotationOwner = psiAnnotation.getOwner();
+            String psi = psiAnnotation.getQualifiedName();
+            tableName = psi;
+        }
+        return tableName;
     }
 
     //获取方法参数
@@ -82,8 +108,6 @@ public class PsiUtil {
         for (PsiMethod psiMethodName : psiClass.getAllMethods()) {
             if (psiMethodName.getName().equals(methodName)) {
                 type = psiMethodName.getReturnType();
-                Class classa = type.getClass();
-                int a = 1;
             }
         }
         return type;
@@ -110,13 +134,13 @@ public class PsiUtil {
         return isCollection;
     }
 
-    public static String chooseCollection(String type){
+    public static String chooseCollection(String type) {
         String collectionType = null;
-        if (type.contains("List")){
+        if (type.contains("List")) {
             collectionType = "java.util.List";
-        }else if (type.contains("Map")){
+        } else if (type.contains("Map")) {
             collectionType = "java.util.Map";
-        }else if(type.contains("Set")){
+        } else if (type.contains("Set")) {
             collectionType = "java.util.Set";
         }
         return collectionType;

@@ -25,9 +25,17 @@ public class TestScript {
     private List<String> dbPackageName;//db实体类包名集合
     private String responsePackageName;
     private String author;
+    private List<String> tableName;//表名
     private boolean isNormal;
     private Date date;
 
+    public List<String> getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(List<String> tableName) {
+        this.tableName = tableName;
+    }
 
     public List<String> getDbMapperPackageName() {
         return dbMapperPackageName;

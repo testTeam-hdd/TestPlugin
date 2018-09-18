@@ -2,8 +2,11 @@ package com.Utils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.Vo.CsvElementVo;
+import com.Vo.TestScript;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiType;
+import com.tasks.GenerateTestScript;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,9 +27,9 @@ public class GenerateCsv {
     private List<PsiClass> dbChecks;
     private boolean isNormal;
     private String path;
-    private String testMethodName;//测试类类名
+    private String testMethodName;//测试方法name
 
-    public GenerateCsv(CsvElementVo csvElementVo) {
+    public GenerateCsv(CsvElementVo csvElementVo,TestScript testScript) {
         this.requests = csvElementVo.getRequest();
         this.response = csvElementVo.getResponse();
         this.dbChecks = csvElementVo.getDbCheck();
@@ -39,6 +42,7 @@ public class GenerateCsv {
         generateResponseCsv();
         generateDbInsertCsv();
         generateDbCheckCsv();
+        generateHostCsv(testScript);
     }
 
     /**
@@ -119,6 +123,23 @@ public class GenerateCsv {
                     index++;
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 生成主csv文件
+     */
+    private void generateHostCsv(TestScript testScript) {
+        String HostPath = null;
+        try {
+            if (isNormal) {
+                HostPath = path + GenerateTestScript.subStringToUc(testMethodName) + "NormalTest." + testMethodName + ".csv";
+            } else {
+                HostPath = path + GenerateTestScript.subStringToUc(testMethodName) + "FuncExceptionTest." + testMethodName + ".csv";
+            }
+            createHostCsv(HostPath, testScript);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -243,4 +264,121 @@ public class GenerateCsv {
         }
     }
 
+    /**
+     * 生成主csv
+     *
+     * @param path 生成文件的绝对路径
+     */
+
+    public static void createHostCsv(String path, TestScript testScript) {
+        try {
+
+            //组装文件路径
+            File file = new File(path);
+            File fileParent = file.getParentFile();
+            if (!fileParent.exists()) {
+                fileParent.mkdirs();
+            }
+            file.createNewFile();
+
+            List<String[]> outputValues = new ArrayList<String[]>();
+            //组装CSV文件第一行
+            List<String> header = new ArrayList<String>();
+            header.add("caseId");
+            header.add("description");
+            if (!EmptyUtils.isEmpty(testScript.getResponse())) {
+                header.add("response");
+            }
+            if (!EmptyUtils.isEmpty(testScript.getAllRequestParem())) {
+                for (PsiType key : testScript.getAllRequestParem().keySet()) {
+                    if (Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
+                        header.add(testScript.getAllRequestParem().get(key));
+                    } else if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
+                        header.add(GenerateTestScript.subString(key.getPresentableText()));
+                    }
+                }
+            }
+            if (!EmptyUtils.isEmpty(testScript.getDbList())) {
+                for (String db : testScript.getDbList()) {
+                    header.add(GenerateTestScript.subString(db));
+                }
+            }
+            if (!EmptyUtils.isEmpty(testScript.getDbCheckList())) {
+                for (String dbCheck : testScript.getDbCheckList()) {
+                    header.add(GenerateTestScript.subString(dbCheck));
+                }
+            }
+            header.add("index");
+            outputValues.add(header.toArray(new String[header.size()]));
+
+            List<String> content = new ArrayList<String>();
+            content.add("NO001");
+            content.add("");
+            if (!EmptyUtils.isEmpty(testScript.getResponse())) {
+                header.add(GenerateCsv.getCsvPath("response.csv", testScript));
+            }
+            if (!EmptyUtils.isEmpty(testScript.getAllRequestParem())) {
+                int index = 1;
+                for (PsiType key : testScript.getAllRequestParem().keySet()) {
+                    if (Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
+                        content.add("");
+                    } else if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
+                        String name = "request" + index + "_" + key.getPresentableText();
+                        content.add(GenerateCsv.getCsvPath(name, testScript));
+                        index++;
+                    }
+                }
+            }
+            if (!EmptyUtils.isEmpty(testScript.getDbList())) {
+                int index = 1;
+                for (String key : testScript.getDbList()) {
+                    String name = "dbInsert" + index + "_" + key;
+                    content.add(GenerateCsv.getCsvPath(name, testScript));
+                    index++;
+                }
+            }
+            if (!EmptyUtils.isEmpty(testScript.getDbCheckList())) {
+                int index = 1;
+                for (String key : testScript.getDbCheckList()) {
+                    String name = "dbCheck" + index + "_" + key;
+                    content.add(GenerateCsv.getCsvPath(name, testScript));
+                    index++;
+                }
+            }
+
+            content.add("0");
+            outputValues.add(content.toArray(new String[content.size()]));
+
+            //初始化写入文件
+            OutputStream outputStream = null;
+            try {
+                outputStream = new FileOutputStream(file);
+            } catch (Exception e) {
+                throw e;
+            }
+            //将生成内容写入CSV文件
+            try {
+                OutputStreamWriter osw = null;
+                osw = new OutputStreamWriter(outputStream);
+                CSVWriter csvWriter = new CSVWriter(osw);
+                csvWriter.writeAll(outputValues);
+                csvWriter.close();
+            } catch (Exception e) {
+                throw e;
+            }
+
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
+
+    public static String getCsvPath(String csvName, TestScript testScript) {
+        String path = "testers/";
+        if (testScript.getIsNormal()) {
+            path = path + "normal/" + testScript.getTestMethod() + "/" + csvName + ".csv";
+        } else {
+            path = path + "funcExp/" + testScript.getTestMethod() + "/" + csvName + ".csv";
+        }
+        return path;
+    }
 }

@@ -36,7 +36,9 @@ public class GenerateTestScript {
     private List<String> dbMapperPackageName;//dbMapper对象包名集合
     private List<String> dbPackageName;//db实体类包名集合
     private String author;//作者
+    private List<String> tableName;//表名
     private Date date;//日期
+    private boolean isNormal;
     private String centent;
 
     public GenerateTestScript(TestScript testScript) {
@@ -56,6 +58,8 @@ public class GenerateTestScript {
         this.allRequestParem = testScript.getAllRequestParem();
         this.dbMapperPackageName = testScript.getDbMapperPackageName();
         this.dbPackageName = testScript.getDbPackageName();
+        this.tableName = testScript.getTableName();
+        this.isNormal = testScript.getIsNormal();
     }
 
     private void spliceScript() {
@@ -79,13 +83,13 @@ public class GenerateTestScript {
         sb.append(";");
         sb.append("\r\n");
 
-        for (String db:dbMapperPackageName) {
+        for (String db : dbMapperPackageName) {
             sb.append("import ");
             sb.append(db);
             sb.append(";\r\n");
         }
 
-        for (String db:dbPackageName) {
+        for (String db : dbPackageName) {
             sb.append("import ");
             sb.append(db);
             sb.append(";\r\n");
@@ -131,7 +135,11 @@ public class GenerateTestScript {
         sb.append("\r\n");
         sb.append("public class ");
         sb.append(testMethod);
-        sb.append("NormalTest extends AutoBaseTest{");
+        if (isNormal) {
+            sb.append("NormalTest extends AutoBaseTest{");
+        } else {
+            sb.append("FuncExceptionTest extends AutoBaseTest{");
+        }
         sb.append("\r\n");
         sb.append("\tprotected static Logger logger = LoggerFactory.getLogger(");
         sb.append(testMethod);
@@ -146,7 +154,7 @@ public class GenerateTestScript {
         sb.append(";");
         sb.append("\r\n");
 
-        for (String db:dbList) {
+        for (String db : dbList) {
             sb.append("\t@Autowired");
             sb.append("\r\n");
             sb.append("\tprivate ");
@@ -175,7 +183,7 @@ public class GenerateTestScript {
                     sb.append(key.getPresentableText());
                     sb.append(allRequestParem.get(key));
                     sb.append(",");
-                } else if(!Arrays.asList(TYPE).contains(key.getPresentableText())&&!PsiUtil.isEnum(key)&&!PsiUtil.isCollection(key)){
+                } else if (!Arrays.asList(TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
                     sb.append("final String");
                     sb.append(" ");
                     sb.append(subString(key.getPresentableText()));
@@ -217,7 +225,7 @@ public class GenerateTestScript {
         sb.append("\r\n");
         sb.append("\t\tthis.cleanDB();");
         sb.append("\r\n");
-        for (String db:dbList) {
+        for (String db : dbList) {
             sb.append("\t\tsuper.insertDB(");
             sb.append(subString(db));
             sb.append(",");
@@ -290,6 +298,18 @@ public class GenerateTestScript {
         sb.append("\t\t}\r\n");
         sb.append("\t}\r\n");
         sb.append("\tpublic void cleanDB() {\r\n");
+        for (int i = 1; i <= dbList.size(); i++) {
+            sb.append("\t\tString condition");
+            sb.append(i);
+            sb.append(" = \"\";");
+            sb.append("\r\n");
+        }
+        for (int i = 1; i <= dbList.size(); i++) {
+            sb.append("\t\tsuper.deleteDB(\"\",condition");
+            sb.append(i);
+            sb.append(");");
+            sb.append("\r\n");
+        }
         sb.append("\r\n");
         sb.append("\t}\r\n");
         sb.append("}\r\n");
@@ -331,6 +351,16 @@ public class GenerateTestScript {
         char substring = str.substring(0, 1).charAt(0);
         if (Character.isUpperCase(substring)) {
             substring = Character.toLowerCase(substring);
+        }
+        str = substring + str.substring(1);
+        return str;
+    }
+
+    //首字母转大写
+    public static String subStringToUc(String str) {
+        char substring = str.substring(0, 1).charAt(0);
+        if (Character.isLowerCase(substring)) {
+            substring = Character.toUpperCase(substring);
         }
         str = substring + str.substring(1);
         return str;

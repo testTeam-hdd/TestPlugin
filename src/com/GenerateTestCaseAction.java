@@ -61,7 +61,7 @@ public class GenerateTestCaseAction extends AnAction {
                     testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
                 }
                 generateTestScript.writeToFile(path, testClassName);
-                new GenerateCsv(generateCsv(testScript));
+                new GenerateCsv(generateCsv(testScript),testScript);
                 Messages.showInfoMessage(project, "脚本生成成功!", "提示");
             }
         });
@@ -245,7 +245,17 @@ public class GenerateTestCaseAction extends AnAction {
         testScript.setRequest(getRequestObject(testScript));
         testScript.setDbMapperPackageName(getDbMapperPackage(testScript));
         testScript.setDbPackageName(getDbPackage(testScript));
+        testScript.setTableName(getTableName(testScript));
         return testScript;
+    }
+
+    private List<String> getTableName(TestScript testScript){
+        List<String> tableNames = new ArrayList<>();
+        for (String entity:testScript.getDbList()){
+            String tableName = PsiUtil.getTableName(project,entity);
+            tableNames.add(tableName);
+        }
+        return tableNames;
     }
 
 //    //变更参数类型

@@ -3,7 +3,9 @@ package com.tasks;
 import com.Utils.EmptyUtils;
 import com.Utils.PsiUtil;
 import com.Vo.TestScript;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiType;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +14,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * dongdong Created by 下午3:34  2018/7/9
@@ -25,7 +26,7 @@ public class GenerateTestScript {
     private String testMethod;//测试方法
     private String testScriptDescription;//测试脚本描述
     private List<String> dbList;//需要插入的db数据列表
-    private Map<PsiType, String> allRequestParem;//被测接口的所有请求参数
+    private List<PsiType> allRequestParem;//被测接口的所有请求参数
     private List<String> request;//请求类型为对象的请求对象集合
     private Object response;//响应对象
     private List<String> dbCheckList;//需要校验的数据对象列表
@@ -62,7 +63,7 @@ public class GenerateTestScript {
         this.isNormal = testScript.getIsNormal();
     }
 
-    private void spliceScript() {
+    private void spliceScript(Project project) {
         StringBuffer sb = new StringBuffer("package ");
         sb.append(packageName);
         sb.append(";");
@@ -134,16 +135,20 @@ public class GenerateTestScript {
         sb.append(" */");
         sb.append("\r\n");
         sb.append("public class ");
-        sb.append(testMethod);
+        sb.append(subStringToUc(testMethod));
         if (isNormal) {
             sb.append("NormalTest extends AutoBaseTest{");
+            sb.append("\r\n");
+            sb.append("\tprotected static Logger logger = LoggerFactory.getLogger(");
+            sb.append(subStringToUc(testMethod));
+            sb.append("NormalTest.class);");
         } else {
             sb.append("FuncExceptionTest extends AutoBaseTest{");
+            sb.append("\r\n");
+            sb.append("\tprotected static Logger logger = LoggerFactory.getLogger(");
+            sb.append(subStringToUc(testMethod));
+            sb.append("FuncExceptionTest.class);");
         }
-        sb.append("\r\n");
-        sb.append("\tprotected static Logger logger = LoggerFactory.getLogger(");
-        sb.append(testMethod);
-        sb.append("NormalTest.class);");
         sb.append("\r\n");
         sb.append("\t@Autowired");
         sb.append("\r\n");
@@ -177,16 +182,24 @@ public class GenerateTestScript {
             sb.append("response,");
         }
         if (!EmptyUtils.isEmpty(allRequestParem)) {
-            for (PsiType key : allRequestParem.keySet()) {
+            int index = 1;
+            for (PsiType key : allRequestParem) {
                 if (Arrays.asList(TYPE).contains(key.getPresentableText())) {
                     sb.append("final ");
                     sb.append(key.getPresentableText());
-                    sb.append(allRequestParem.get(key));
+                    sb.append(" ");
+                    sb.append("param");
+                    sb.append(index);
                     sb.append(",");
-                } else if (!Arrays.asList(TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
+                    index++;
+                } else if (!Arrays.asList(TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) ) {
                     sb.append("final String");
                     sb.append(" ");
-                    sb.append(subString(key.getPresentableText()));
+                    if (PsiUtil.isCollection(key)){
+                        sb.append(subString(GenerateTestScript.subStringGeneric(key.getPresentableText())));
+                    }else{
+                        sb.append(subString(key.getPresentableText()));
+                    }
                     sb.append(",");
                 }
             }
@@ -207,6 +220,18 @@ public class GenerateTestScript {
         }
         sb.append("int index ) {");
         sb.append("\r\n");
+        int listIndex = 1;
+        for (PsiType key : allRequestParem) {
+            if (PsiUtil.isCollection(key)) {
+                sb.append("\t\t");
+                sb.append(key.getPresentableText());
+                sb.append(" list");
+                sb.append(listIndex);
+                sb.append(" = new ArrayList<>();");
+                sb.append("\r\n");
+                listIndex++;
+            }
+        }
         if (!EmptyUtils.isEmpty(request)) {
             for (String req : request) {
                 sb.append("\t\t");
@@ -258,19 +283,32 @@ public class GenerateTestScript {
         sb.append(".");
         sb.append(testMethod);
         sb.append("(");
-        for (PsiType key : allRequestParem.keySet()) {
-            int requestIndex = 1;
+        int requestIndex = 1;
+        int index = 1;
+        int newListIndex = 1;
+        for (PsiType key : allRequestParem) {
             if (Arrays.asList(TYPE).contains(key.getPresentableText())) {
-                sb.append(allRequestParem.get(key));
+                sb.append("param" + index);
+                index++;
+            } else if (PsiUtil.isEnum(key)) {
+                String enumName = PsiUtil.getEnumObject(project, key.getPresentableText());
+                sb.append(key.getPresentableText());
+                sb.append(".");
+                sb.append(enumName);
+            } else if (PsiUtil.isCollection(key)) {
+                sb.append("list");
+                sb.append(newListIndex);
+                newListIndex++;
             } else {
                 sb.append("my");
                 sb.append(key.getPresentableText());
+
             }
             if (!(requestIndex == allRequestParem.size())) {
                 sb.append(",");
             }
+            requestIndex++;
 
-            requestIndex += 1;
         }
         sb.append(");\r\n");
         if (!EmptyUtils.isEmpty(response)) {
@@ -322,9 +360,9 @@ public class GenerateTestScript {
      * @param classPath 类文件路径
      * @param className 类文件名称
      */
-    public void writeToFile(String classPath, String className) {
+    public void writeToFile(String classPath, String className, Project project) {
         try {
-            this.spliceScript();
+            this.spliceScript(project);
             File floder = new File(classPath);
             if (!floder.exists()) {
                 floder.mkdirs();
@@ -364,5 +402,11 @@ public class GenerateTestScript {
         }
         str = substring + str.substring(1);
         return str;
+    }
+
+    //截取集合泛型对象
+    public static String subStringGeneric(String collection) {
+        String generic = StringUtils.substringBetween(collection, "<", ">");
+        return generic;
     }
 }

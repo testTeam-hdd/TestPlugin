@@ -10,7 +10,9 @@ import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,10 +34,13 @@ public class PsiUtil {
             //通过名称查找类名
             PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName + "." + className, new EverythingGlobalScope(project));
             psiClass = psiClasses[0];
+            PsiField[] a =psiClass.getAllFields();
+            boolean c = psiClass.isEnum();
+            PsiElement d = psiClass.getLBrace();
 //            PsiModifierList c = psiClass.getModifierList();
 //            PsiAnnotation[] a = psiClass.getModifierList().getAnnotations();
 //            PsiAnnotation d = AnnotationUtil.findAnnotation(psiClass,true,"@Table");
-//            int b = 1;
+            int b = 1;
         }
 
         return psiClass;
@@ -83,23 +88,23 @@ public class PsiUtil {
     }
 
     //获取方法参数
-    public static Map<PsiType, String> getMethodPrame(Project project, String className, String methodName) {
+    public static List<PsiType> getMethodPrame(Project project, String className, String methodName) {
         PsiType type = null;
         String object = null;
-        Map<PsiType, String> map = new HashMap<>();
+        List<PsiType> list = new ArrayList<>();
         PsiClass psiClass = PsiUtil.getPsiClass(project, className);
         for (PsiMethod psiMethodName : psiClass.getAllMethods()) {
             if (psiMethodName.getName().equals(methodName)) {
+                PsiParameterList psiParameterList =  psiMethodName.getParameterList();
                 for (PsiParameter psiParameter : psiMethodName.getParameterList().getParameters()) {
                     //获取类名
                     type = psiParameter.getTypeElement().getType();
-                    object = psiParameter.getName();
-                    map.put(type, object);
+                    list.add(type);
                 }
 
             }
         }
-        return map;
+        return list;
     }
 
     //获取返回类型
@@ -135,16 +140,23 @@ public class PsiUtil {
         return isCollection;
     }
 
-    public static String chooseCollection(String type) {
-        String collectionType = null;
-        if (type.contains("List")) {
-            collectionType = "java.util.List";
-        } else if (type.contains("Map")) {
-            collectionType = "java.util.Map";
-        } else if (type.contains("Set")) {
-            collectionType = "java.util.Set";
-        }
-        return collectionType;
+//    public static String chooseCollection(String type) {
+//        String collectionType = null;
+//        if (type.contains("List")) {
+//            collectionType = "java.util.List";
+//        } else if (type.contains("Map")) {
+//            collectionType = "java.util.Map";
+//        } else if (type.contains("Set")) {
+//            collectionType = "java.util.Set";
+//        }
+//        return collectionType;
+//    }
+    //获取一个枚举对象
+    public static String getEnumObject(Project project,String className){
+        PsiClass psiClass = PsiUtil.getPsiClass(project,className);
+        PsiField psiField = psiClass.getAllFields()[0];
+        String enumName = psiField.getName();
+        return enumName;
     }
 }
 //获取类型的包路径

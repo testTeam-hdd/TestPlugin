@@ -16,11 +16,9 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import com.tasks.GenerateTestScript;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * dongdong Created by 下午3:18  2018/6/7
@@ -65,9 +63,7 @@ public class GenerateTestCaseAction extends AnAction {
                         testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
                     }
                     new GenerateCsv(generateCsv(testScript), testScript);
-                    generateTestScript.writeToFile(path, testClassName);
-//                    System.out.println(TestMain.class.getResource(""));
-
+                    generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
 //                    Icon icon = new ImageIcon(getClass().getResource("/icon/danger.png"));
                     Messages.showInfoMessage("脚本生成成功!", "result");
 //                    Messages.showMessageDialog("脚本生成成功!", "result",icon);
@@ -104,17 +100,21 @@ public class GenerateTestCaseAction extends AnAction {
      */
     private List<String> getRequestPackageName(TestScript testScript) {
         List<String> packageNames = new ArrayList<>();
-        String packageName;
-        Map<PsiType, String> maps = PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod());
-        for (PsiType key : maps.keySet()) {
-            if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key)) {
+        String packageName ;
+        String listPackageName = null;
+        List<PsiType> lists = PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod());
+        for (PsiType key : lists) {
+            if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
                 if (PsiUtil.isCollection(key)) {
-                    packageName = PsiUtil.chooseCollection(key.getPresentableText());
+                    listPackageName = "java.util.*";
+                    packageName = PsiUtil.getPackageName(project, GenerateTestScript.subStringGeneric(key.getPresentableText()));
+                    packageName = packageName + "." + GenerateTestScript.subStringGeneric(key.getPresentableText());
                 } else {
                     packageName = PsiUtil.getPackageName(project, key.getPresentableText());
                     packageName = packageName + "." + key.getPresentableText();
                 }
                 packageNames.add(packageName);
+                packageNames.add(listPackageName);
             }
         }
         return packageNames;
@@ -128,7 +128,7 @@ public class GenerateTestCaseAction extends AnAction {
         PsiType returnType = PsiUtil.getMethodRetureType(project, testScript.getTestClass(), testScript.getTestMethod());
         if (!Arrays.asList(GenerateTestScript.TYPE).contains(returnType.getPresentableText()) && !PsiUtil.isEnum(returnType)) {
             if (PsiUtil.isCollection(returnType)) {
-                packageName = PsiUtil.chooseCollection(returnType.getPresentableText());
+                packageName = "java.util.*";
             } else {
                 packageName = PsiUtil.getPackageName(project, returnType.getPresentableText());
                 packageName = packageName + "." + returnType.getPresentableText();
@@ -193,12 +193,18 @@ public class GenerateTestCaseAction extends AnAction {
      */
     private List<String> getRequestObject(TestScript testScript) {
         List<String> requests = new ArrayList<>();
-        Map<PsiType, String> maps = PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod());
-        for (PsiType key : maps.keySet()) {
-            if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
+        List<PsiType> list = PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod());
+        if (list.size() == 0 || list == null) {
+            return null;
+        }
+        for (PsiType key : list) {
+            if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) ) {
+                if (PsiUtil.isCollection(key)){
+                    String generic = GenerateTestScript.subStringGeneric(key.getPresentableText());
+                    requests.add(generic);
+                    continue;
+                }
                 requests.add(key.getPresentableText());
-            } else {
-                return null;
             }
         }
         return requests;

@@ -29,7 +29,7 @@ public class GenerateCsv {
     private String path;
     private String testMethodName;//测试方法name
 
-    public GenerateCsv(CsvElementVo csvElementVo,TestScript testScript) {
+    public GenerateCsv(CsvElementVo csvElementVo, TestScript testScript) {
         this.requests = csvElementVo.getRequest();
         this.response = csvElementVo.getResponse();
         this.dbChecks = csvElementVo.getDbCheck();
@@ -290,11 +290,17 @@ public class GenerateCsv {
                 header.add("response");
             }
             if (!EmptyUtils.isEmpty(testScript.getAllRequestParem())) {
-                for (PsiType key : testScript.getAllRequestParem().keySet()) {
+                int index = 1;
+                for (PsiType key : testScript.getAllRequestParem()) {
                     if (Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
-                        header.add(testScript.getAllRequestParem().get(key));
-                    } else if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
-                        header.add(GenerateTestScript.subString(key.getPresentableText()));
+                        header.add("param" + index);
+                        index++;
+                    } else if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key)) {
+                        if (PsiUtil.isCollection(key)) {
+                            header.add(GenerateTestScript.subString(GenerateTestScript.subStringGeneric(key.getPresentableText())));
+                        } else {
+                            header.add(GenerateTestScript.subString(key.getPresentableText()));
+                        }
                     }
                 }
             }
@@ -319,11 +325,16 @@ public class GenerateCsv {
             }
             if (!EmptyUtils.isEmpty(testScript.getAllRequestParem())) {
                 int index = 1;
-                for (PsiType key : testScript.getAllRequestParem().keySet()) {
+                for (PsiType key : testScript.getAllRequestParem()) {
                     if (Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
                         content.add("");
-                    } else if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) && !PsiUtil.isCollection(key)) {
-                        String name = "request" + index + "_" + key.getPresentableText();
+                    } else if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key)) {
+                        String name;
+                        if (PsiUtil.isCollection(key)) {
+                            name = "request" + index + "_" + GenerateTestScript.subStringGeneric(key.getPresentableText());
+                        } else {
+                            name = "request" + index + "_" + key.getPresentableText();
+                        }
                         content.add(GenerateCsv.getCsvPath(name, testScript));
                         index++;
                     }

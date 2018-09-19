@@ -15,7 +15,7 @@ public class TestScript {
     private String testScriptDescription;
     private String testPackageName;
     private List<String> dbList;
-    private Map<PsiType, String> allRequestParem;
+    private List<PsiType> allRequestParem;
     private List<String> request;//请求类型为对象的请求对象集合
     private String response;
     private List<String> dbCheckList;
@@ -150,11 +150,11 @@ public class TestScript {
         this.dbList = dbList;
     }
 
-    public Map<PsiType, String> getAllRequestParem() {
+    public List<PsiType> getAllRequestParem() {
         return allRequestParem;
     }
 
-    public void setAllRequestParem(Map<PsiType, String> allRequestParem) {
+    public void setAllRequestParem(List<PsiType> allRequestParem) {
         this.allRequestParem = allRequestParem;
     }
 

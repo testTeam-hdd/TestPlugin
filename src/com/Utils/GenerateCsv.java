@@ -243,7 +243,7 @@ public class GenerateCsv {
                 if (name.equals("id") || name.equals("serialVersionUID")) {
                     continue;
                 }
-                if (name.equals("createTime") || name.equals("updateTime")) {
+                if (name.equals("createDate") || name.equals("modifyDate")) {
                     continue;
                 }
                 header.add(name.getName());
@@ -315,7 +315,7 @@ public class GenerateCsv {
             content.add("NO001");
             content.add("");
             if (!EmptyUtils.isEmpty(testScript.getResponse())) {
-                header.add(GenerateCsv.getCsvPath("response", testScript));
+                content.add(GenerateCsv.getCsvPath("response", testScript));
             }
             if (!EmptyUtils.isEmpty(testScript.getAllRequestParem())) {
                 int index = 1;

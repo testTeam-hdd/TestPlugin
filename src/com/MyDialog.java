@@ -83,9 +83,8 @@ public class MyDialog extends JDialog {
             testScript.setIsNormal(normal.isSelected() ? true : false);
             testScript.setDbCheckList(getButtonList(dbCheckJButton));
             testScript.setDbList(getButtonList(dbInsertJButton));
-            mCallBack.ok(testScript);
+            mCallBack.ok(testScript,this);
         }
-        dispose();
     }
 
     private void setJradio() {
@@ -149,7 +148,7 @@ public class MyDialog extends JDialog {
     }
 
     public interface DialogCallBack {
-        void ok(TestScript testScript);
+        void ok(TestScript testScript,MyDialog myDialog);
     }
 
     private void myUpdateUI() {

@@ -1,5 +1,7 @@
 package com.Utils;
 
+import com.exception.PluginErrorMsg;
+import com.exception.PluginRunTimeException;
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -20,7 +22,7 @@ public class PsiUtil {
         PsiClass psiClass = null;
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
         if (psiFiles.length == 0) {
-            Messages.showInfoMessage(project, "类名输入错误，未查到该类,请检查后重新填写" + className, "title");
+            throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
         } else {
             PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
             psiJavaFile.getVirtualFile();
@@ -50,13 +52,12 @@ public class PsiUtil {
     //获取包名
     public static String getPackageName(Project project, String className) {
         String packageName = null;
-        try {
             PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
+            if (psiFiles.length == 0) {
+                throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
+            }
             PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
             packageName = psiJavaFile.getPackageName();
-        } catch (Exception e) {
-            Messages.showInfoMessage(project, "类名错误，请检查后重新填写" + className, "title");
-        }
         return packageName;
     }
 

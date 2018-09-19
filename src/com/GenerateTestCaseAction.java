@@ -5,6 +5,8 @@ import com.Utils.GenerateCsv;
 import com.Utils.PsiUtil;
 import com.Vo.CsvElementVo;
 import com.Vo.TestScript;
+import com.exception.PluginErrorMsg;
+import com.exception.PluginRunTimeException;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -14,6 +16,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import com.tasks.GenerateTestScript;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,19 +53,29 @@ public class GenerateTestCaseAction extends AnAction {
     private void generate() {
         MyDialog myDialog = new MyDialog(new MyDialog.DialogCallBack() {
             @Override
-            public void ok(TestScript testScript) {
-                getScriptParem(testScript);
-                String path = getAppPath(testScript);
-                GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
-                String testClassName = null;
-                if (testScript.getIsNormal()) {
-                    testClassName = testScript.getTestMethod() + "NormalTest.java";
-                } else {
-                    testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
+            public void ok(TestScript testScript, MyDialog dialog) {
+                try {
+                    getScriptParem(testScript);
+                    String path = getAppPath(testScript);
+                    GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
+                    String testClassName = null;
+                    if (testScript.getIsNormal()) {
+                        testClassName = testScript.getTestMethod() + "NormalTest.java";
+                    } else {
+                        testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
+                    }
+                    new GenerateCsv(generateCsv(testScript), testScript);
+                    generateTestScript.writeToFile(path, testClassName);
+//                    System.out.println(TestMain.class.getResource(""));
+
+//                    Icon icon = new ImageIcon(getClass().getResource("/icon/danger.png"));
+                    Messages.showInfoMessage("脚本生成成功!", "result");
+//                    Messages.showMessageDialog("脚本生成成功!", "result",icon);
+//                    Messages.showDialog("脚本生成成功!","result",new String[]{Messages.OK_BUTTON},0,icon);
+                    dialog.dispose();
+                } catch (PluginRunTimeException e) {
+                    Messages.showInfoMessage(e.getErrorMsg(), "提示");
                 }
-                generateTestScript.writeToFile(path, testClassName);
-                new GenerateCsv(generateCsv(testScript),testScript);
-                Messages.showInfoMessage(project, "脚本生成成功!", "提示");
             }
         });
         myDialog.setVisible(true);
@@ -128,8 +141,13 @@ public class GenerateTestCaseAction extends AnAction {
      * 获取测试类对应的包名
      */
     private String getTestClassPackage(TestScript testScript) {
-        String packageName = PsiUtil.getPackageName(project, testScript.getTestClass());
-        packageName = packageName + "." + testScript.getTestClass();
+        String packageName = null;
+        try {
+            packageName = PsiUtil.getPackageName(project, testScript.getTestClass());
+            packageName = packageName + "." + testScript.getTestClass();
+        } catch (PluginRunTimeException e) {
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_CLASS_NOT_FIND);
+        }
         return packageName;
     }
 
@@ -139,10 +157,14 @@ public class GenerateTestCaseAction extends AnAction {
     private List<String> getDbMapperPackage(TestScript testScript) {
         List<String> dbMapperPackage = new ArrayList<>();
         String packageName = null;
-        for (String db : testScript.getDbList()) {
-            packageName = PsiUtil.getPackageName(project, db+ "Mapper");
-            packageName = packageName + "." + db + "Mapper";
-            dbMapperPackage.add(packageName);
+        try {
+            for (String db : testScript.getDbList()) {
+                packageName = PsiUtil.getPackageName(project, db + "Mapper");
+                packageName = packageName + "." + db + "Mapper";
+                dbMapperPackage.add(packageName);
+            }
+        } catch (PluginRunTimeException e) {
+            throw new PluginRunTimeException(PluginErrorMsg.DBENTITY_CLASS_NOT_FIND);
         }
         return dbMapperPackage;
     }
@@ -153,14 +175,17 @@ public class GenerateTestCaseAction extends AnAction {
     private List<String> getDbPackage(TestScript testScript) {
         List<String> dbPackage = new ArrayList<>();
         String packageName = null;
-        for (String db : testScript.getDbList()) {
-            packageName = PsiUtil.getPackageName(project, db);
-            packageName = packageName + "." + db ;
-            dbPackage.add(packageName);
+        try {
+            for (String db : testScript.getDbList()) {
+                packageName = PsiUtil.getPackageName(project, db);
+                packageName = packageName + "." + db;
+                dbPackage.add(packageName);
+            }
+        } catch (PluginRunTimeException e) {
+            throw new PluginRunTimeException(PluginErrorMsg.DBENTITY_CLASS_NOT_FIND);
         }
         return dbPackage;
     }
-
 
 
     /**
@@ -215,6 +240,8 @@ public class GenerateTestCaseAction extends AnAction {
                 }
             }
             csvElementVo.setDbInsert(dbInserts);
+        } catch (PluginRunTimeException ex) {
+            throw new PluginRunTimeException(PluginErrorMsg.DBENTITY_CLASS_NOT_FIND);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -226,6 +253,8 @@ public class GenerateTestCaseAction extends AnAction {
                 }
             }
             csvElementVo.setDbCheck(dbChecks);
+        } catch (PluginRunTimeException ex) {
+            throw new PluginRunTimeException(PluginErrorMsg.DBCHECKBO_CLASS_NOT_FIND);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,10 +278,10 @@ public class GenerateTestCaseAction extends AnAction {
         return testScript;
     }
 
-    private List<String> getTableName(TestScript testScript){
+    private List<String> getTableName(TestScript testScript) {
         List<String> tableNames = new ArrayList<>();
-        for (String entity:testScript.getDbList()){
-            String tableName = PsiUtil.getTableName(project,entity);
+        for (String entity : testScript.getDbList()) {
+            String tableName = PsiUtil.getTableName(project, entity);
             tableNames.add(tableName);
         }
         return tableNames;

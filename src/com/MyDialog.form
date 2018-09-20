@@ -29,7 +29,7 @@
           <grid id="72e36" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints border-constraint="North"/>
             <properties>
-              <preferredSize width="1100" height="270"/>
+              <preferredSize width="1100" height="280"/>
             </properties>
             <border type="none"/>
             <children>
@@ -116,7 +116,7 @@
                     <constraints/>
                     <properties>
                       <font size="16" style="1"/>
-                      <text value="   作     者   "/>
+                      <text value="  作       者  "/>
                     </properties>
                   </component>
                   <component id="e799c" class="javax.swing.JTextField" binding="author">

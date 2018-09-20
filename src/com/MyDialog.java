@@ -1,9 +1,14 @@
 package com;
 
 import com.Utils.AddObjectJPanel;
+import com.Utils.EmptyUtils;
 import com.Vo.RequestParam;
 import com.Vo.TestScript;
+import com.exception.PluginErrorMsg;
+import com.exception.PluginRunTimeException;
+import com.intellij.openapi.ui.Messages;
 
+import javax.management.RuntimeErrorException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -16,6 +21,8 @@ import java.util.Map;
 
 public class MyDialog extends JDialog {
     private JPanel contentPane;
+    private JPanel scriptJPanel;
+    private JPanel setDataJPanel;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JScrollPane jsp;
@@ -24,8 +31,6 @@ public class MyDialog extends JDialog {
     private JTextField testMethod;
     private JRadioButton normal;
     private JRadioButton exception;
-    private JPanel setDataJPanel;
-    private JPanel scriptJPanel;
     private JButton nextJButton;
     private JButton previonsJBotton;
     private JButton DBinsertButton;
@@ -33,12 +38,9 @@ public class MyDialog extends JDialog {
     private JPanel dbInsertJButton;
     private JPanel dbCheckJButton;
     private JTextField author;
-    private int caseIdIndex = 1;
     private TestScript testScript = new TestScript();
     private DialogCallBack mCallBack;
     private CardLayout cardLayout = new CardLayout();
-
-    private Map<String, String> testCaseMap = new HashMap<>();
 
     public MyDialog(DialogCallBack callBack) {
         this.mCallBack = callBack;
@@ -76,14 +78,19 @@ public class MyDialog extends JDialog {
 
     private void onOK() {
         if (null != mCallBack) {
-            testScript.setTestScriptDescription(testScriptDescription.getText().trim());
-            testScript.setTestClass(testClass.getText().trim());
-            testScript.setTestMethod(testMethod.getText().trim());
-            testScript.setAuthor(author.getText().trim());
-            testScript.setIsNormal(normal.isSelected() ? true : false);
-            testScript.setDbCheckList(getButtonList(dbCheckJButton));
-            testScript.setDbList(getButtonList(dbInsertJButton));
-            mCallBack.ok(testScript,this);
+            try {
+                checkParam();
+                testScript.setTestScriptDescription(testScriptDescription.getText().trim());
+                testScript.setTestClass(testClass.getText().trim());
+                testScript.setTestMethod(testMethod.getText().trim());
+                testScript.setAuthor(author.getText().trim());
+                testScript.setIsNormal(normal.isSelected() ? true : false);
+                testScript.setDbCheckList(getButtonList(dbCheckJButton));
+                testScript.setDbList(getButtonList(dbInsertJButton));
+                mCallBack.ok(testScript, this);
+            }catch (PluginRunTimeException e){
+                Messages.showInfoMessage(e.getErrorMsg(), "提示");
+            }
         }
     }
 
@@ -157,7 +164,7 @@ public class MyDialog extends JDialog {
     }
 
     private String setIndex(Container component) {
-        String index = null;
+        String index ;
         if (component.getComponentCount() == 0) {
             index = "01";
         } else {
@@ -165,5 +172,19 @@ public class MyDialog extends JDialog {
             index = newindex<10?"0"+Integer.valueOf(newindex).toString():Integer.valueOf(newindex).toString();
         }
         return index;
+    }
+    private void checkParam(){
+        if (EmptyUtils.isEmpty(testClass.getText().trim())) {
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_CLASS_IS_EMPTY);
+        }
+        if (EmptyUtils.isEmpty(testMethod.getText().trim())) {
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_METHOD_IS_EMPTY);
+        }
+        if (EmptyUtils.isEmpty(testScriptDescription.getText().trim())) {
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_DESCRIPTION_IS_EMPTY);
+        }
+        if (EmptyUtils.isEmpty(author.getText().trim())) {
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_AUTHOR_IS_EMPTY);
+        }
     }
 }

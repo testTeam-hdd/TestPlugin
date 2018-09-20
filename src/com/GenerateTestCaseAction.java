@@ -64,10 +64,7 @@ public class GenerateTestCaseAction extends AnAction {
                     }
                     new GenerateCsv(generateCsv(testScript), testScript);
                     generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
-//                    Icon icon = new ImageIcon(getClass().getResource("/icon/danger.png"));
                     Messages.showInfoMessage("脚本生成成功!", "result");
-//                    Messages.showMessageDialog("脚本生成成功!", "result",icon);
-//                    Messages.showDialog("脚本生成成功!","result",new String[]{Messages.OK_BUTTON},0,icon);
                     dialog.dispose();
                 } catch (PluginRunTimeException e) {
                     Messages.showInfoMessage(e.getErrorMsg(), "提示");
@@ -101,7 +98,7 @@ public class GenerateTestCaseAction extends AnAction {
     private List<String> getRequestPackageName(TestScript testScript) {
         List<String> packageNames = new ArrayList<>();
         String packageName ;
-        String listPackageName = null;
+        String listPackageName ;
         List<PsiType> lists = PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod());
         for (PsiType key : lists) {
             if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
@@ -109,12 +106,12 @@ public class GenerateTestCaseAction extends AnAction {
                     listPackageName = "java.util.*";
                     packageName = PsiUtil.getPackageName(project, GenerateTestScript.subStringGeneric(key.getPresentableText()));
                     packageName = packageName + "." + GenerateTestScript.subStringGeneric(key.getPresentableText());
+                    packageNames.add(listPackageName);
                 } else {
                     packageName = PsiUtil.getPackageName(project, key.getPresentableText());
                     packageName = packageName + "." + key.getPresentableText();
                 }
                 packageNames.add(packageName);
-                packageNames.add(listPackageName);
             }
         }
         return packageNames;

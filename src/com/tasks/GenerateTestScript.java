@@ -220,18 +220,6 @@ public class GenerateTestScript {
         }
         sb.append("int index ) {");
         sb.append("\r\n");
-        int listIndex = 1;
-        for (PsiType key : allRequestParem) {
-            if (PsiUtil.isCollection(key)) {
-                sb.append("\t\t");
-                sb.append(key.getPresentableText());
-                sb.append(" list");
-                sb.append(listIndex);
-                sb.append(" = new ArrayList<>();");
-                sb.append("\r\n");
-                listIndex++;
-            }
-        }
         if (!EmptyUtils.isEmpty(request)) {
             for (String req : request) {
                 sb.append("\t\t");
@@ -245,6 +233,26 @@ public class GenerateTestScript {
                 sb.append(req);
                 sb.append(".class,index);");
                 sb.append("\r\n");
+            }
+        }
+        int listIndex = 1;
+        for (PsiType key : allRequestParem) {
+            if (PsiUtil.isCollection(key)) {
+                sb.append("\t\t");
+                sb.append(key.getPresentableText());
+                sb.append(" list");
+                sb.append(listIndex);
+                sb.append(" = new ArrayList<>();");
+                sb.append("\r\n");
+                sb.append("\t\t");
+                sb.append("list");
+                sb.append(listIndex);
+                sb.append(".add(");
+                sb.append("my");
+                sb.append(GenerateTestScript.subStringGeneric(key.getPresentableText()));
+                sb.append(");");
+                sb.append("\r\n");
+                listIndex++;
             }
         }
         sb.append("\r\n");

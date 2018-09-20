@@ -27,9 +27,9 @@ public class AddObjectJPanel extends JPanel {
                 for (Component component : components) {
                     if (component.getName().equals(jLabel.getText())) {
                         container.remove(component);
-//                        container.revalidate();
-//                        container.validate();
+                        container.validate();
                         container.repaint();
+                        container.revalidate();
                     }
                 }
             }

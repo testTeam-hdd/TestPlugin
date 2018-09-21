@@ -21,7 +21,7 @@ import java.util.Map;
 public class PsiUtil {
     //获取PsiClass对象
     public static PsiClass getPsiClass(Project project, String className) {
-        PsiClass psiClass = null;
+        PsiClass psiClass;
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
         if (psiFiles.length == 0) {
             throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
@@ -33,16 +33,11 @@ public class PsiUtil {
 //      PsiClass[] psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(packageName+".TransfeeBo", GlobalSearchScope.allScope(project));
             //通过名称查找类名
             PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName + "." + className, new EverythingGlobalScope(project));
+            if (psiClasses.length==0){
+                throw new PluginRunTimeException(PluginErrorMsg.PSICLASS_NOT_FIND);
+            }
             psiClass = psiClasses[0];
-            PsiField[] a =psiClass.getAllFields();
-            boolean c = psiClass.isEnum();
-            PsiElement d = psiClass.getLBrace();
-//            PsiModifierList c = psiClass.getModifierList();
-//            PsiAnnotation[] a = psiClass.getModifierList().getAnnotations();
-//            PsiAnnotation d = AnnotationUtil.findAnnotation(psiClass,true,"@Table");
-            int b = 1;
         }
-
         return psiClass;
     }
 
@@ -115,6 +110,9 @@ public class PsiUtil {
             if (psiMethodName.getName().equals(methodName)) {
                 type = psiMethodName.getReturnType();
             }
+        }
+        if (type == null){
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_METHOD_NOT_FIND);
         }
         return type;
     }

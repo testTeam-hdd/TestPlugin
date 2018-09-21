@@ -52,7 +52,6 @@ public class GenerateTestCaseAction extends AnAction {
         MyDialog myDialog = new MyDialog(new MyDialog.DialogCallBack() {
             @Override
             public void ok(TestScript testScript, MyDialog dialog) {
-                try {
                     getScriptParem(testScript);
                     String path = getAppPath(testScript);
                     GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
@@ -66,9 +65,6 @@ public class GenerateTestCaseAction extends AnAction {
                     generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
                     Messages.showInfoMessage("脚本生成成功!", "result");
                     dialog.dispose();
-                } catch (PluginRunTimeException e) {
-                    Messages.showInfoMessage(e.getErrorMsg(), "提示");
-                }
             }
         });
         myDialog.setVisible(true);
@@ -267,17 +263,21 @@ public class GenerateTestCaseAction extends AnAction {
     }
 
     private TestScript getScriptParem(TestScript testScript) {
-        testScript.setResponsePackageName(getResponsePackageName(testScript));
-        testScript.setRequestPackageName(getRequestPackageName(testScript));
-        testScript.setPackageName(packageName.substring(14) + testScript.getTestClass());
-        testScript.setTestPackageName(getTestClassPackage(testScript));
-        String response = PsiUtil.getMethodRetureType(project, testScript.getTestClass(), testScript.getTestMethod()).getPresentableText();
-        testScript.setResponse(response.equals("void") ? null : response);
-        testScript.setAllRequestParem(PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod()));
-        testScript.setRequest(getRequestObject(testScript));
-        testScript.setDbMapperPackageName(getDbMapperPackage(testScript));
-        testScript.setDbPackageName(getDbPackage(testScript));
-        testScript.setTableName(getTableName(testScript));
+        try {
+            testScript.setResponsePackageName(getResponsePackageName(testScript));
+            testScript.setRequestPackageName(getRequestPackageName(testScript));
+            testScript.setPackageName(packageName.substring(14) + testScript.getTestClass());
+            testScript.setTestPackageName(getTestClassPackage(testScript));
+            String response = PsiUtil.getMethodRetureType(project, testScript.getTestClass(), testScript.getTestMethod()).getPresentableText();
+            testScript.setResponse(response.equals("void") ? null : response);
+            testScript.setAllRequestParem(PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod()));
+            testScript.setRequest(getRequestObject(testScript));
+            testScript.setDbMapperPackageName(getDbMapperPackage(testScript));
+            testScript.setDbPackageName(getDbPackage(testScript));
+            testScript.setTableName(getTableName(testScript));
+        } catch (PluginRunTimeException e) {
+            Messages.showInfoMessage(e.getErrorMsg(), "提示");
+        }
         return testScript;
     }
 

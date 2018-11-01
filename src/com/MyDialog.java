@@ -38,6 +38,8 @@ public class MyDialog extends JDialog {
     private JPanel dbInsertJButton;
     private JPanel dbCheckJButton;
     private JTextField author;
+    private JButton ObjectCheckButton;
+    private JPanel ObjectCheckJButton;
     private TestScript testScript = new TestScript();
     private DialogCallBack mCallBack;
     private CardLayout cardLayout = new CardLayout();
@@ -65,6 +67,8 @@ public class MyDialog extends JDialog {
 
         DBcheckButton.addActionListener(e -> addButton(dbCheckJButton));
 
+        ObjectCheckButton.addActionListener(e -> addButton(ObjectCheckJButton));
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         addWindowListener(new WindowAdapter() {
@@ -87,6 +91,7 @@ public class MyDialog extends JDialog {
                 testScript.setIsNormal(normal.isSelected() ? true : false);
                 testScript.setDbCheckList(getButtonList(dbCheckJButton));
                 testScript.setDbList(getButtonList(dbInsertJButton));
+                testScript.setObjectList(getButtonList(ObjectCheckJButton));
                 mCallBack.ok(testScript, this);
             }catch (PluginRunTimeException e){
                 Messages.showInfoMessage(e.getErrorMsg(), "提示");
@@ -103,8 +108,7 @@ public class MyDialog extends JDialog {
     }
 
     private void addButton(Container container) {
-        dbInsertJButton.setLayout(new BoxLayout(dbInsertJButton, BoxLayout.Y_AXIS));
-        dbCheckJButton.setLayout(new BoxLayout(dbCheckJButton, BoxLayout.Y_AXIS));
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         String index = setIndex(container);
         JPanel myJPanl = new AddObjectJPanel(index, container, 540, 30);
         myJPanl.setName(index);

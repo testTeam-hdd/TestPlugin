@@ -19,6 +19,7 @@ public class TestScript {
     private List<String> request;//请求类型为对象的请求对象集合
     private String response;
     private List<String> dbCheckList;
+    private List<String> objectList;
     private String packageName;
     private List<String> requestPackageName;
     private List<String> dbMapperPackageName;//dbmapper包名集合
@@ -28,6 +29,14 @@ public class TestScript {
     private List<String> tableName;//表名
     private boolean isNormal;
     private Date date;
+
+    public List<String> getObjectList() {
+        return objectList;
+    }
+
+    public void setObjectList(List<String> objectList) {
+        this.objectList = objectList;
+    }
 
     public List<String> getTableName() {
         return tableName;

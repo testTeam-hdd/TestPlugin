@@ -227,6 +227,8 @@
                 <colspec value="fill:max(d;4px):noGrow"/>
                 <colspec value="left:4dlu:noGrow"/>
                 <colspec value="fill:max(d;4px):noGrow"/>
+                <colspec value="left:4dlu:noGrow"/>
+                <colspec value="fill:max(d;4px):noGrow"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -239,7 +241,7 @@
                       <forms top="0" left="0" bottom="5" right="0"/>
                     </constraints>
                     <properties>
-                      <preferredSize width="540" height="660"/>
+                      <preferredSize width="360" height="660"/>
                     </properties>
                     <border type="none"/>
                     <children>
@@ -247,13 +249,15 @@
                         <constraints border-constraint="South"/>
                         <properties>
                           <preferredSize width="200" height="30"/>
-                          <text value="新增db数据"/>
+                          <text value="新增表数据"/>
                         </properties>
                       </component>
                       <grid id="5feeb" binding="dbInsertJButton" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints border-constraint="Center"/>
-                        <properties/>
+                        <properties>
+                          <inheritsPopupMenu value="true"/>
+                        </properties>
                         <border type="etched"/>
                         <children/>
                       </grid>
@@ -265,7 +269,7 @@
                       <forms top="0" left="0" bottom="5" right="0"/>
                     </constraints>
                     <properties>
-                      <preferredSize width="540" height="660"/>
+                      <preferredSize width="360" height="660"/>
                     </properties>
                     <border type="none"/>
                     <children>
@@ -273,10 +277,36 @@
                         <constraints border-constraint="South"/>
                         <properties>
                           <preferredSize width="200" height="30"/>
-                          <text value="新增dbCheck数据"/>
+                          <text value="新增表数据校验"/>
                         </properties>
                       </component>
                       <grid id="5c830" binding="dbCheckJButton" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints border-constraint="Center"/>
+                        <properties/>
+                        <border type="etched"/>
+                        <children/>
+                      </grid>
+                    </children>
+                  </grid>
+                  <grid id="e50ce" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints>
+                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <forms top="0" left="0" bottom="5" right="0"/>
+                    </constraints>
+                    <properties>
+                      <preferredSize width="360" height="660"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="cd851" class="javax.swing.JButton" binding="ObjectCheckButton">
+                        <constraints border-constraint="South"/>
+                        <properties>
+                          <preferredSize width="200" height="30"/>
+                          <text value="新增对象校验"/>
+                        </properties>
+                      </component>
+                      <grid id="1d242" binding="ObjectCheckJButton" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints border-constraint="Center"/>
                         <properties/>

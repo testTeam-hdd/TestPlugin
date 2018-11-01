@@ -173,6 +173,11 @@ public class GenerateTestScript {
 
         sb.append("\t@Test(dataProvider = \"CsvDataProvider\", description =\"");
         sb.append(testScriptDescription);
+        if (isNormal) {
+            sb.append("-正常场景");
+        }else{
+            sb.append("-异常场景");
+        }
         sb.append("\")\r\n");
         sb.append("\tpublic void ");
         sb.append(testMethod);
@@ -220,6 +225,8 @@ public class GenerateTestScript {
         }
         sb.append("int index ) {");
         sb.append("\r\n");
+        sb.append("\t\t//请求对象设置");
+        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(request)) {
             for (String req : request) {
                 sb.append("\t\t");
@@ -256,7 +263,11 @@ public class GenerateTestScript {
             }
         }
         sb.append("\r\n");
+        sb.append("\t\t//数据清理");
+        sb.append("\r\n");
         sb.append("\t\tthis.cleanDB();");
+        sb.append("\r\n");
+        sb.append("\t\t//数据准备");
         sb.append("\r\n");
         for (String db : dbList) {
             sb.append("\t\tsuper.insertDB(");
@@ -269,6 +280,8 @@ public class GenerateTestScript {
             sb.append("\r\n");
         }
         sb.append("\t\ttry {");
+        sb.append("\r\n");
+        sb.append("\t\t//方法执行");
         sb.append("\r\n");
         sb.append("\t\t\t");
         if (!EmptyUtils.isEmpty(response)) {
@@ -319,6 +332,8 @@ public class GenerateTestScript {
 
         }
         sb.append(");\r\n");
+        sb.append("\t\t//结果校验");
+        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(response)) {
             sb.append("\t\t\tAssert.assertTrue(ObjectCheckUtil.check(");
             sb.append("response,");
@@ -343,6 +358,8 @@ public class GenerateTestScript {
         sb.append("\t\t\tthis.cleanDB();\r\n");
         sb.append("\t\t}\r\n");
         sb.append("\t}\r\n");
+        sb.append("\t\t\t//数据清理");
+        sb.append("\r\n");
         sb.append("\tpublic void cleanDB() {\r\n");
         for (int i = 1; i <= dbList.size(); i++) {
             sb.append("\t\tString condition");

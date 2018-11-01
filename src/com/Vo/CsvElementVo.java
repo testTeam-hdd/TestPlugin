@@ -13,11 +13,19 @@ public class CsvElementVo {
     private List<PsiClass> request;
     private PsiClass response;
     private List<PsiClass> dbInsert;
-    private List<PsiClass> dbCheck;
+    private List<String> dbCheck;
+    private List<PsiClass> objectCheck;
     private boolean isNormal;
     private String path;
     private String testMethodName;
 
+    public List<PsiClass> getObjectCheck() {
+        return objectCheck;
+    }
+
+    public void setObjectCheck(List<PsiClass> objectCheck) {
+        this.objectCheck = objectCheck;
+    }
 
     public String getTestMethodName() {
         return testMethodName;
@@ -68,11 +76,11 @@ public class CsvElementVo {
         this.dbInsert = dbInsert;
     }
 
-    public List<PsiClass> getDbCheck() {
+    public List<String> getDbCheck() {
         return dbCheck;
     }
 
-    public void setDbCheck(List<PsiClass> dbCheck) {
+    public void setDbCheck(List<String> dbCheck) {
         this.dbCheck = dbCheck;
     }
 }

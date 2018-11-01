@@ -9,11 +9,9 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.tasks.GenerateTestScript;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * dongdong Created by 下午5:41  2018/7/10
@@ -48,7 +46,12 @@ public class PsiUtil {
         String packageName = psiJavaFile.getPackageName();
         return psiJavaFile;
     }
-
+    //获取指定名称的文件
+    public static PsiFile getPsiFile(Project project, String fileName) {
+        PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, fileName, GlobalSearchScope.allScope(project));
+        PsiFile psiFile =  psiFiles[0];
+        return psiFile;
+    }
     //获取包名
     public static String getPackageName(Project project, String className) {
         String packageName = null;
@@ -120,6 +123,12 @@ public class PsiUtil {
     //判断是否为枚举类型
     public static boolean isEnum(PsiType psiType) {
         boolean isEnum = true;
+        if (psiType.getPresentableText().equals("Object")){
+            return false;
+        }
+        if (Arrays.asList(GenerateTestScript.TYPE).contains(psiType.getPresentableText())){
+            return false;
+        }
         PsiType superPsiType = psiType.getSuperTypes()[0].getDeepComponentType();
         if (!superPsiType.getPresentableText().contains("Enum")) {
             isEnum = false;
@@ -131,6 +140,12 @@ public class PsiUtil {
     //判断是否为集合类型
     public static boolean isCollection(PsiType psiType) {
         boolean isCollection = true;
+        if (psiType.getPresentableText().equals("Object")){
+            return false;
+        }
+        if (Arrays.asList(GenerateTestScript.TYPE).contains(psiType.getPresentableText())){
+            return false;
+        }
         PsiType superPsiType = psiType.getSuperTypes()[0].getDeepComponentType();
         if (!superPsiType.getPresentableText().contains("Collection")) {
             isCollection = false;

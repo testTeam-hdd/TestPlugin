@@ -3,15 +3,22 @@ package com.Utils;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.Vo.CsvElementVo;
 import com.Vo.TestScript;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
+import com.miz.testframework.config.DBConfig;
+import com.miz.testframework.config.PropertyConfig;
+import com.miz.testframework.util.CSVUtil;
+import com.miz.testframework.util.StringUtil;
 import com.tasks.GenerateTestScript;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,16 +31,18 @@ public class GenerateCsv {
     private List<PsiClass> requests;
     private PsiClass response;
     private List<PsiClass> dbInserts;
-    private List<PsiClass> dbChecks;
+    private List<String> dbChecks;
+    private List<PsiClass> objectChecks;
     private boolean isNormal;
     private String path;
     private String testMethodName;//测试方法name
 
-    public GenerateCsv(CsvElementVo csvElementVo, TestScript testScript) {
+    public GenerateCsv(CsvElementVo csvElementVo, TestScript testScript, Project project) {
         this.requests = csvElementVo.getRequest();
         this.response = csvElementVo.getResponse();
         this.dbChecks = csvElementVo.getDbCheck();
         this.dbInserts = csvElementVo.getDbInsert();
+        this.objectChecks = csvElementVo.getObjectCheck();
         this.isNormal = csvElementVo.isNormal();
         this.path = csvElementVo.getPath();
         this.testMethodName = csvElementVo.getTestMethodName();
@@ -41,7 +50,8 @@ public class GenerateCsv {
         generateRequestCsv();
         generateResponseCsv();
         generateDbInsertCsv();
-        generateDbCheckCsv();
+        generateDbCheckCsv(project);
+        generateObjectCheckCsv();
         generateHostCsv(testScript);
     }
 
@@ -63,11 +73,13 @@ public class GenerateCsv {
         String requestPath = null;
         int index = 1;
         try {
-            if (requests.size() != 0 && requests != null) {
-                for (PsiClass request : requests) {
-                    requestPath = path + "request" + index + "_" + request.getName() + ".csv";
-                    createVerticalCsvForCheck(request, requestPath);
-                    index++;
+            if (requests != null) {
+                if (requests.size() != 0) {
+                    for (PsiClass request : requests) {
+                        requestPath = path + "request" + index + "_" + request.getName() + ".csv";
+                        createVerticalCsvForCheck(request, requestPath);
+                        index++;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -84,6 +96,28 @@ public class GenerateCsv {
         try {
             if (!EmptyUtils.isEmpty(response)) {
                 createVerticalCsvForCheck(response, responsePath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 生成对象校验csv文件
+     */
+    private void generateObjectCheckCsv() {
+        String requestPath = null;
+        int index = 1;
+        try {
+            if (objectChecks != null) {
+                if (objectChecks.size() != 0) {
+                    for (PsiClass myObject : objectChecks) {
+                        requestPath = path + "objectCheck" + index + "_" + myObject.getName() + ".csv";
+                        createVerticalCsvForCheck(myObject, requestPath);
+                        index++;
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,15 +146,17 @@ public class GenerateCsv {
     /**
      * 生成dbCheckcsv文件
      */
-    private void generateDbCheckCsv() {
+    private void generateDbCheckCsv(Project project) {
         String dbCheckPath = null;
         int index = 1;
         try {
-            if (dbChecks.size() != 0 && dbChecks != null) {
-                for (PsiClass dbCheck : dbChecks) {
-                    dbCheckPath = path + "dbCheck" + index + "_" + dbCheck.getName() + ".csv";
-                    createVerticalCsvForCheck(dbCheck, dbCheckPath);
-                    index++;
+            if (requests != null) {
+                if (requests.size() != 0) {
+                    for (String tableName : dbChecks) {
+                        dbCheckPath = path + "dbCheck" + index + "_" + tableName + ".csv";
+                        createDBCheckTemplateCsv(tableName, dbCheckPath,project);
+                        index++;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -146,7 +182,7 @@ public class GenerateCsv {
     }
 
     /**
-     * 生成字段为竖向排列的校验文件
+     * 生成字段为竖向排列的校验文件(对象)
      *
      * @param psiClass 需要生成的类
      * @param path     生成文件的绝对路径
@@ -176,10 +212,11 @@ public class GenerateCsv {
             header.add(className.substring(className.lastIndexOf(".") + 1, className.length()));
             int i = 1;
             for (PsiField filename : fileNames) {
-                if (filename.equals("id") || filename.equals("serialVersionUID")) {
+                String newfilename = filename.getName();
+                if (newfilename.equals("id") || newfilename.equals("serialVersionUID")) {
                     continue;
                 }
-                if (filename.equals("createTime") || filename.equals("updateTime")) {
+                if (newfilename.equals("createDate") || newfilename.equals("modifyDate")) {
                     continue;
                 }
                 List<String> value = new ArrayList<String>();
@@ -219,6 +256,61 @@ public class GenerateCsv {
         }
     }
 
+    /**
+     * 生成字段为竖向排列的校验文件（表）
+     *
+     * @param tableName 表名
+     * @param path     生成文件的绝对路径
+     */
+    public static void createDBCheckTemplateCsv(String tableName, String path,Project project) {
+        if ((StringUtil.isBlank(tableName)) || (StringUtil.isBlank(path))) {
+            throw new RuntimeException("tableName or path cannot be null!");
+        }
+        DBConnect.getDbConnect(project);
+        DBConfig dbconf = DBConnect.getDBConfig(tableName);
+        DBConn conn = new DBConn();
+        List csvValues = new ArrayList();
+        String[] header = { "tableName", "field", "flag", "exp1" };
+        csvValues.add(header);
+        try {
+            String querySql;
+
+            querySql = "select column_name from information_schema.columns where table_name='"
+                    + tableName + "' and table_schema='"+dbconf.getSchema()+"'";
+
+            int i = 0;
+            ResultSet resultSet = conn.executeQuery(tableName, querySql);
+            while (resultSet.next()) {
+                String colsName = resultSet.getString(1);
+                String firstColumn = "";
+                if (i == 0) {
+                    firstColumn = tableName;
+                }
+                String[] row = { firstColumn, colsName, "Y", "" };
+                csvValues.add(row);
+                i++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
+        File file = new File(path);
+        try {
+            //初始化写入文件
+            OutputStream outputStream = null;
+            outputStream = new FileOutputStream(file);
+            //将生成内容写入CSV文件
+            OutputStreamWriter osw = null;
+            osw = new OutputStreamWriter(outputStream);
+            CSVWriter csvWriter = new CSVWriter(osw);
+            csvWriter.writeAll(csvValues);
+            csvWriter.close();
+
+        } catch (Exception e1) {
+            throw new RuntimeException(e1);
+        }
+    }
     /**
      * 生成字段为横向排列的校验文件
      *

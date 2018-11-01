@@ -52,19 +52,19 @@ public class GenerateTestCaseAction extends AnAction {
         MyDialog myDialog = new MyDialog(new MyDialog.DialogCallBack() {
             @Override
             public void ok(TestScript testScript, MyDialog dialog) {
-                    getScriptParem(testScript);
-                    String path = getAppPath(testScript);
-                    GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
-                    String testClassName = null;
-                    if (testScript.getIsNormal()) {
-                        testClassName = testScript.getTestMethod() + "NormalTest.java";
-                    } else {
-                        testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
-                    }
-                    new GenerateCsv(generateCsv(testScript), testScript);
-                    generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
-                    Messages.showInfoMessage("脚本生成成功!", "result");
-                    dialog.dispose();
+                getScriptParem(testScript);
+                String path = getAppPath(testScript);
+                GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
+                String testClassName = null;
+                if (testScript.getIsNormal()) {
+                    testClassName = testScript.getTestMethod() + "NormalTest.java";
+                } else {
+                    testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
+                }
+                new GenerateCsv(generateCsv(testScript), testScript,project);
+                generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
+                Messages.showInfoMessage("脚本生成成功!", "result");
+                dialog.dispose();
             }
         });
         myDialog.setVisible(true);
@@ -93,8 +93,8 @@ public class GenerateTestCaseAction extends AnAction {
      */
     private List<String> getRequestPackageName(TestScript testScript) {
         List<String> packageNames = new ArrayList<>();
-        String packageName ;
-        String listPackageName ;
+        String packageName;
+        String listPackageName;
         List<PsiType> lists = PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod());
         for (PsiType key : lists) {
             if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText())) {
@@ -191,8 +191,8 @@ public class GenerateTestCaseAction extends AnAction {
             return null;
         }
         for (PsiType key : list) {
-            if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) ) {
-                if (PsiUtil.isCollection(key)){
+            if (!Arrays.asList(GenerateTestScript.TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key)) {
+                if (PsiUtil.isCollection(key)) {
                     String generic = GenerateTestScript.subStringGeneric(key.getPresentableText());
                     requests.add(generic);
                     continue;
@@ -209,7 +209,7 @@ public class GenerateTestCaseAction extends AnAction {
     private CsvElementVo generateCsv(TestScript testScript) {
         List<PsiClass> requests = new ArrayList<>();
         List<PsiClass> dbInserts = new ArrayList<>();
-        List<PsiClass> dbChecks = new ArrayList<>();
+        List<PsiClass> objs = new ArrayList<>();
 
         CsvElementVo csvElementVo = new CsvElementVo();
         csvElementVo.setNormal(testScript.getIsNormal());
@@ -245,17 +245,20 @@ public class GenerateTestCaseAction extends AnAction {
             e.printStackTrace();
         }
         try {
-            if (testScript.getDbCheckList().size() != 0 && testScript.getDbCheckList() != null) {
-                for (String dbCheck : testScript.getDbCheckList()) {
-                    PsiClass psiClass = PsiUtil.getPsiClass(project, dbCheck);
-                    dbChecks.add(psiClass);
+            if (testScript.getObjectList().size() != 0 && testScript.getObjectList() != null) {
+                for (String obj : testScript.getObjectList()) {
+                    PsiClass psiClass = PsiUtil.getPsiClass(project, obj);
+                    objs.add(psiClass);
                 }
             }
-            csvElementVo.setDbCheck(dbChecks);
+            csvElementVo.setObjectCheck(objs);
         } catch (PluginRunTimeException ex) {
-            throw new PluginRunTimeException(PluginErrorMsg.DBCHECKBO_CLASS_NOT_FIND);
+            throw new PluginRunTimeException(PluginErrorMsg.DBENTITY_CLASS_NOT_FIND);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (testScript.getDbCheckList().size() != 0 && testScript.getDbCheckList() != null) {
+            csvElementVo.setDbCheck(testScript.getDbCheckList());
         }
         csvElementVo.setTestMethodName(testScript.getTestMethod());
         csvElementVo.setPath(getCsvPath(testScript));

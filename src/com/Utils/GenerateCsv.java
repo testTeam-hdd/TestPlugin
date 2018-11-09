@@ -340,6 +340,9 @@ public class GenerateCsv {
                 }
                 header.add(name.getName());
             }
+            header.forEach(files->{
+                files.replace("\"","");
+            });
             outputValues.add(header.toArray(new String[header.size()]));
             //初始化写入文件
             OutputStream outputStream = null;

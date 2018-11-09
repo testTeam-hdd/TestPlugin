@@ -51,7 +51,7 @@ public class MyDialog extends JDialog {
         contentPane.setLayout(cardLayout);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        setSize(1100, 750);
+        setSize(800, 500);
         setLocationRelativeTo(null);
         setJradio();
 

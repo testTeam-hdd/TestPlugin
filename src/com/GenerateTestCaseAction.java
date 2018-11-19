@@ -10,6 +10,7 @@ import com.exception.PluginRunTimeException;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
@@ -26,6 +27,8 @@ import java.util.List;
 public class GenerateTestCaseAction extends AnAction {
 
     private Project project;
+
+    private Module module;
 
     //包名
     private String packageName = "src.test.java.com.miz.autotest.servicetest.";
@@ -61,7 +64,7 @@ public class GenerateTestCaseAction extends AnAction {
                 } else {
                     testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
                 }
-                new GenerateCsv(generateCsv(testScript), testScript,project);
+                new GenerateCsv(generateCsv(testScript), testScript, project);
                 generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
                 Messages.showInfoMessage("脚本生成成功!", "result");
                 dialog.dispose();
@@ -75,8 +78,13 @@ public class GenerateTestCaseAction extends AnAction {
      * 获取包路径
      */
     private String getAppPath(TestScript testScript) {
+        String path = null;
         String packagePath = packageName.replace(".", "/");
-        String path = project.getBasePath() + "/" + packagePath + testScript.getTestClass();
+        if (EmptyUtils.isNotEmpty(testScript.getModule())) {
+            path = project.getBasePath() + "/" + testScript.getModule() + "/" + packagePath + testScript.getTestClass();
+        } else {
+            path = project.getBasePath() + "/" + packagePath + testScript.getTestClass();
+        }
         return path;
     }
 
@@ -84,7 +92,12 @@ public class GenerateTestCaseAction extends AnAction {
      * 获取csv路径
      */
     private String getCsvPath(TestScript testScript) {
-        String path = project.getBasePath() + csvPath;
+        String path = null;
+        if (EmptyUtils.isNotEmpty(testScript.getModule())) {
+            path = project.getBasePath() + "/" + testScript.getModule() + "/" + csvPath;
+        } else {
+            path = project.getBasePath() + csvPath;
+        }
         return path;
     }
 
@@ -152,6 +165,7 @@ public class GenerateTestCaseAction extends AnAction {
         String packageName = null;
         try {
             for (String db : testScript.getDbList()) {
+                db = PsiUtil.subClassName(db);
                 packageName = PsiUtil.getPackageName(project, db + "Mapper");
                 packageName = packageName + "." + db + "Mapper";
                 dbMapperPackage.add(packageName);
@@ -170,6 +184,7 @@ public class GenerateTestCaseAction extends AnAction {
         String packageName = null;
         try {
             for (String db : testScript.getDbList()) {
+                db = PsiUtil.subClassName(db);
                 packageName = PsiUtil.getPackageName(project, db);
                 packageName = packageName + "." + db;
                 dbPackage.add(packageName);

@@ -29,7 +29,7 @@
           <grid id="72e36" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints border-constraint="North"/>
             <properties>
-              <preferredSize width="800" height="280"/>
+              <preferredSize width="800" height="310"/>
             </properties>
             <border type="none"/>
             <children>
@@ -37,7 +37,7 @@
                 <constraints/>
                 <properties>
                   <minimumSize width="1080" height="700"/>
-                  <preferredSize width="780" height="50"/>
+                  <preferredSize width="780" height="45"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -52,7 +52,7 @@
                     <constraints/>
                     <properties>
                       <minimumSize width="14" height="100"/>
-                      <preferredSize width="680" height="40"/>
+                      <preferredSize width="680" height="35"/>
                     </properties>
                   </component>
                 </children>
@@ -61,7 +61,7 @@
                 <constraints/>
                 <properties>
                   <minimumSize width="1100" height="700"/>
-                  <preferredSize width="780" height="50"/>
+                  <preferredSize width="780" height="45"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -76,7 +76,7 @@
                     <constraints/>
                     <properties>
                       <alignmentY value="0.5"/>
-                      <preferredSize width="680" height="40"/>
+                      <preferredSize width="680" height="35"/>
                     </properties>
                   </component>
                 </children>
@@ -85,7 +85,7 @@
                 <constraints/>
                 <properties>
                   <minimumSize width="1100" height="700"/>
-                  <preferredSize width="780" height="50"/>
+                  <preferredSize width="780" height="45"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -99,7 +99,7 @@
                   <component id="ea7ab" class="javax.swing.JTextField" binding="testMethod">
                     <constraints/>
                     <properties>
-                      <preferredSize width="680" height="40"/>
+                      <preferredSize width="680" height="35"/>
                     </properties>
                   </component>
                 </children>
@@ -108,7 +108,7 @@
                 <constraints/>
                 <properties>
                   <minimumSize width="1100" height="700"/>
-                  <preferredSize width="780" height="50"/>
+                  <preferredSize width="780" height="45"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -122,7 +122,30 @@
                   <component id="e799c" class="javax.swing.JTextField" binding="author">
                     <constraints/>
                     <properties>
-                      <preferredSize width="680" height="40"/>
+                      <preferredSize width="680" height="35"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="45964" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints/>
+                <properties>
+                  <minimumSize width="1100" height="700"/>
+                  <preferredSize width="780" height="45"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="bb515" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <font size="14" style="1"/>
+                      <text value="  模       块  "/>
+                    </properties>
+                  </component>
+                  <component id="3e51d" class="javax.swing.JTextField" binding="module">
+                    <constraints/>
+                    <properties>
+                      <preferredSize width="680" height="35"/>
                     </properties>
                   </component>
                 </children>
@@ -133,7 +156,7 @@
                 <properties>
                   <autoscrolls value="true"/>
                   <font size="16"/>
-                  <preferredSize width="780" height="50"/>
+                  <preferredSize width="780" height="45"/>
                   <toolTipText value="设置脚本相关参数"/>
                 </properties>
                 <border type="none" title-justification="1" title-position="2">
@@ -218,7 +241,7 @@
             <constraints border-constraint="North"/>
             <properties>
               <autoscrolls value="true"/>
-              <preferredSize width="800" height="430"/>
+              <preferredSize width="800" height="420"/>
             </properties>
             <border type="none"/>
             <children>

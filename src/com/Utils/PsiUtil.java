@@ -2,16 +2,16 @@ package com.Utils;
 
 import com.exception.PluginErrorMsg;
 import com.exception.PluginRunTimeException;
-import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.tasks.GenerateTestScript;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * dongdong Created by 下午5:41  2018/7/10
@@ -20,47 +20,66 @@ public class PsiUtil {
     //获取PsiClass对象
     public static PsiClass getPsiClass(Project project, String className) {
         PsiClass psiClass;
-        PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
-        if (psiFiles.length == 0) {
-            throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
-        } else {
-            PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
-            psiJavaFile.getVirtualFile();
-            String packageName = psiJavaFile.getPackageName();
-//      通过名称查找类名，自测失败\
-//      PsiClass[] psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(packageName+".TransfeeBo", GlobalSearchScope.allScope(project));
-            //通过名称查找类名
-            PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName + "." + className, new EverythingGlobalScope(project));
-            if (psiClasses.length==0){
-                throw new PluginRunTimeException(PluginErrorMsg.PSICLASS_NOT_FIND);
-            }
-            psiClass = psiClasses[0];
+        String packageName = null;
+        if (PsiUtil.isAllPackageName(className)) {
+            packageName = className;
         }
+
+        if (EmptyUtils.isEmpty(packageName)) {
+            PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
+            if (psiFiles.length == 0) {
+                psiFiles = FilenameIndex.getFilesByName(project, className + ".java", GlobalSearchScope.allScope(project));
+            }
+            if (psiFiles.length == 0) {
+                throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
+            } else {
+                PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
+                psiJavaFile.getVirtualFile();
+                packageName = psiJavaFile.getPackageName() + "." + className;
+            }
+        }
+        PsiClass[] psiClasses = JavaPsiFacade.getInstance(project).findClasses(packageName, new EverythingGlobalScope(project));
+        if (psiClasses.length == 0) {
+            throw new PluginRunTimeException(PluginErrorMsg.PSICLASS_NOT_FIND);
+        }
+        psiClass = psiClasses[0];
+
         return psiClass;
     }
 
     //获取PsiJavaFile
     public static PsiJavaFile getPsiJavaFile(Project project, String className) {
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
+        if (psiFiles.length == 0) {
+            psiFiles = FilenameIndex.getFilesByName(project, className + ".java", GlobalSearchScope.allScope(project));
+        }
+        if (psiFiles.length == 0) {
+            throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
+        }
         PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
         String packageName = psiJavaFile.getPackageName();
         return psiJavaFile;
     }
+
     //获取指定名称的文件
     public static PsiFile getPsiFile(Project project, String fileName) {
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, fileName, GlobalSearchScope.allScope(project));
-        PsiFile psiFile =  psiFiles[0];
+        PsiFile psiFile = psiFiles[0];
         return psiFile;
     }
+
     //获取包名
     public static String getPackageName(Project project, String className) {
         String packageName = null;
-            PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
-            if (psiFiles.length == 0) {
-                throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
-            }
-            PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
-            packageName = psiJavaFile.getPackageName();
+        PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
+        if (psiFiles.length == 0) {
+            psiFiles = FilenameIndex.getFilesByName(project, className + ".java", GlobalSearchScope.allScope(project));
+        }
+        if (psiFiles.length == 0) {
+            throw new PluginRunTimeException(PluginErrorMsg.CLASS_NOT_FIND);
+        }
+        PsiJavaFile psiJavaFile = (PsiJavaFile) psiFiles[0];
+        packageName = psiJavaFile.getPackageName();
         return packageName;
     }
 
@@ -93,13 +112,13 @@ public class PsiUtil {
         PsiClass psiClass = PsiUtil.getPsiClass(project, className);
         for (PsiMethod psiMethodName : psiClass.getAllMethods()) {
             if (psiMethodName.getName().equals(methodName)) {
-                PsiParameterList psiParameterList =  psiMethodName.getParameterList();
+                PsiParameterList psiParameterList = psiMethodName.getParameterList();
                 for (PsiParameter psiParameter : psiMethodName.getParameterList().getParameters()) {
                     //获取类名
                     type = psiParameter.getTypeElement().getType();
                     list.add(type);
                 }
-
+                break;
             }
         }
         return list;
@@ -112,9 +131,10 @@ public class PsiUtil {
         for (PsiMethod psiMethodName : psiClass.getAllMethods()) {
             if (psiMethodName.getName().equals(methodName)) {
                 type = psiMethodName.getReturnType();
+                break;
             }
         }
-        if (type == null){
+        if (type == null) {
             throw new PluginRunTimeException(PluginErrorMsg.TEST_METHOD_NOT_FIND);
         }
         return type;
@@ -123,10 +143,10 @@ public class PsiUtil {
     //判断是否为枚举类型
     public static boolean isEnum(PsiType psiType) {
         boolean isEnum = true;
-        if (psiType.getPresentableText().equals("Object")){
+        if (psiType.getPresentableText().equals("Object")) {
             return false;
         }
-        if (Arrays.asList(GenerateTestScript.TYPE).contains(psiType.getPresentableText())){
+        if (Arrays.asList(GenerateTestScript.TYPE).contains(psiType.getPresentableText())) {
             return false;
         }
         PsiType superPsiType = psiType.getSuperTypes()[0].getDeepComponentType();
@@ -140,10 +160,10 @@ public class PsiUtil {
     //判断是否为集合类型
     public static boolean isCollection(PsiType psiType) {
         boolean isCollection = true;
-        if (psiType.getPresentableText().equals("Object")){
+        if (psiType.getPresentableText().equals("Object")) {
             return false;
         }
-        if (Arrays.asList(GenerateTestScript.TYPE).contains(psiType.getPresentableText())){
+        if (Arrays.asList(GenerateTestScript.TYPE).contains(psiType.getPresentableText())) {
             return false;
         }
         PsiType superPsiType = psiType.getSuperTypes()[0].getDeepComponentType();
@@ -153,7 +173,7 @@ public class PsiUtil {
         return isCollection;
     }
 
-//    public static String chooseCollection(String type) {
+    //    public static String chooseCollection(String type) {
 //        String collectionType = null;
 //        if (type.contains("List")) {
 //            collectionType = "java.util.List";
@@ -165,11 +185,29 @@ public class PsiUtil {
 //        return collectionType;
 //    }
     //获取一个枚举对象
-    public static String getEnumObject(Project project,String className){
-        PsiClass psiClass = PsiUtil.getPsiClass(project,className);
+    public static String getEnumObject(Project project, String className) {
+        PsiClass psiClass = PsiUtil.getPsiClass(project, className);
         PsiField psiField = psiClass.getAllFields()[0];
         String enumName = psiField.getName();
         return enumName;
+    }
+
+    //判断是否为全包名
+    public static boolean isAllPackageName(String packageName) {
+        Boolean isAll = false;
+        if (packageName.contains(".")) {
+            isAll = true;
+        }
+        return isAll;
+    }
+    //截取全包名中的类名
+    public static String subClassName(String className) {
+        String packageName = className;
+        if (className.contains(".")) {
+            packageName = className.substring(className.lastIndexOf(".") + 1, className.length());
+
+        }
+        return packageName;
     }
 }
 //获取类型的包路径
@@ -182,3 +220,6 @@ public class PsiUtil {
 //psiClass.getAllFields()
 //获取当前类的所有属性
 //psiClass.getFields()
+//      通过名称查找类名，自测失败\
+//      PsiClass[] psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(packageName+".TransfeeBo", GlobalSearchScope.allScope(project));
+//通过名称查找类名

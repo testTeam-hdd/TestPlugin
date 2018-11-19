@@ -8,8 +8,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiType;
 import com.miz.testframework.config.DBConfig;
-import com.miz.testframework.config.PropertyConfig;
-import com.miz.testframework.util.CSVUtil;
 import com.miz.testframework.util.StringUtil;
 import com.tasks.GenerateTestScript;
 
@@ -150,11 +148,11 @@ public class GenerateCsv {
         String dbCheckPath = null;
         int index = 1;
         try {
-            if (requests != null) {
-                if (requests.size() != 0) {
+            if (dbChecks != null) {
+                if (EmptyUtils.isNotEmpty(dbChecks)) {
                     for (String tableName : dbChecks) {
                         dbCheckPath = path + "dbCheck" + index + "_" + tableName + ".csv";
-                        createDBCheckTemplateCsv(tableName, dbCheckPath,project);
+                        createDBCheckTemplateCsv(tableName, dbCheckPath, project);
                         index++;
                     }
                 }
@@ -260,9 +258,9 @@ public class GenerateCsv {
      * 生成字段为竖向排列的校验文件（表）
      *
      * @param tableName 表名
-     * @param path     生成文件的绝对路径
+     * @param path      生成文件的绝对路径
      */
-    public static void createDBCheckTemplateCsv(String tableName, String path,Project project) {
+    public static void createDBCheckTemplateCsv(String tableName, String path, Project project) {
         if ((StringUtil.isBlank(tableName)) || (StringUtil.isBlank(path))) {
             throw new RuntimeException("tableName or path cannot be null!");
         }
@@ -270,13 +268,13 @@ public class GenerateCsv {
         DBConfig dbconf = DBConnect.getDBConfig(tableName);
         DBConn conn = new DBConn();
         List csvValues = new ArrayList();
-        String[] header = { "tableName", "field", "flag", "exp1" };
+        String[] header = {"tableName", "field", "flag", "exp1"};
         csvValues.add(header);
         try {
             String querySql;
 
             querySql = "select column_name from information_schema.columns where table_name='"
-                    + tableName + "' and table_schema='"+dbconf.getSchema()+"'";
+                    + tableName + "' and table_schema='" + dbconf.getSchema() + "'";
 
             int i = 0;
             ResultSet resultSet = conn.executeQuery(tableName, querySql);
@@ -286,7 +284,7 @@ public class GenerateCsv {
                 if (i == 0) {
                     firstColumn = tableName;
                 }
-                String[] row = { firstColumn, colsName, "Y", "" };
+                String[] row = {firstColumn, colsName, "Y", ""};
                 csvValues.add(row);
                 i++;
             }
@@ -311,6 +309,7 @@ public class GenerateCsv {
             throw new RuntimeException(e1);
         }
     }
+
     /**
      * 生成字段为横向排列的校验文件
      *
@@ -330,18 +329,19 @@ public class GenerateCsv {
             List<String[]> outputValues = new ArrayList<String[]>();
             List<String> header = new ArrayList<String>();
             String className = psiClass.getName();
-            header.add(className.substring(className.lastIndexOf(".") + 1, className.length()));
+//            header.add(className.substring(className.lastIndexOf(".") + 1, className.length()));
             for (PsiField name : fileNames) {
-                if (name.equals("id") || name.equals("serialVersionUID")) {
+                String newfilename = name.getName();
+                if (newfilename.equals("id") || newfilename.equals("serialVersionUID")) {
                     continue;
                 }
-                if (name.equals("createDate") || name.equals("modifyDate")) {
+                if (newfilename.equals("createDate") || newfilename.equals("modifyDate")) {
                     continue;
                 }
-                header.add(name.getName());
+                header.add(newfilename);
             }
-            header.forEach(files->{
-                files.replace("\"","");
+            header.forEach(files -> {
+                files.replace("\"", "");
             });
             outputValues.add(header.toArray(new String[header.size()]));
             //初始化写入文件
@@ -394,19 +394,19 @@ public class GenerateCsv {
                         if (PsiUtil.isCollection(key)) {
                             header.add(GenerateTestScript.subString(GenerateTestScript.subStringGeneric(key.getPresentableText())));
                         } else {
-                            header.add(GenerateTestScript.subString(key.getPresentableText()));
+                            header.add("req" + GenerateTestScript.subString(key.getPresentableText()));
                         }
                     }
                 }
             }
             if (!EmptyUtils.isEmpty(testScript.getDbList())) {
                 for (String db : testScript.getDbList()) {
-                    header.add(GenerateTestScript.subString(db));
+                    header.add("dbIns" + GenerateTestScript.subString(PsiUtil.subClassName(db)));
                 }
             }
             if (!EmptyUtils.isEmpty(testScript.getDbCheckList())) {
                 for (String dbCheck : testScript.getDbCheckList()) {
-                    header.add(GenerateTestScript.subString(dbCheck));
+                    header.add("dbChe" + GenerateTestScript.subString(dbCheck));
                 }
             }
             header.add("index");
@@ -428,7 +428,7 @@ public class GenerateCsv {
                         if (PsiUtil.isCollection(key)) {
                             name = "request" + index + "_" + GenerateTestScript.subStringGeneric(key.getPresentableText());
                         } else {
-                            name = "request" + index + "_" + key.getPresentableText();
+                            name = "request" + index + "_" + PsiUtil.subClassName(key.getPresentableText());
                         }
                         content.add(GenerateCsv.getCsvPath(name, testScript));
                         index++;
@@ -438,7 +438,7 @@ public class GenerateCsv {
             if (!EmptyUtils.isEmpty(testScript.getDbList())) {
                 int index = 1;
                 for (String key : testScript.getDbList()) {
-                    String name = "dbInsert" + index + "_" + key;
+                    String name = "dbInsert" + index + "_" + PsiUtil.subClassName(key);
                     content.add(GenerateCsv.getCsvPath(name, testScript));
                     index++;
                 }

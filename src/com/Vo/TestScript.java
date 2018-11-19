@@ -4,7 +4,6 @@ import com.intellij.psi.PsiType;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * dongdong Created by 下午3:13  2018/7/9
@@ -26,9 +25,18 @@ public class TestScript {
     private List<String> dbPackageName;//db实体类包名集合
     private String responsePackageName;
     private String author;
+    private String module;
     private List<String> tableName;//表名
     private boolean isNormal;
     private Date date;
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
 
     public List<String> getObjectList() {
         return objectList;

@@ -163,10 +163,10 @@ public class GenerateTestScript {
             sb.append("\t@Autowired");
             sb.append("\r\n");
             sb.append("\tprivate ");
-            sb.append(db);
+            sb.append(PsiUtil.subClassName(db));
             sb.append("Mapper");
             sb.append(" ");
-            sb.append(subString(db));
+            sb.append(subString(PsiUtil.subClassName(db)));
             sb.append("Mapper;");
             sb.append("\r\n");
         }
@@ -175,7 +175,7 @@ public class GenerateTestScript {
         sb.append(testScriptDescription);
         if (isNormal) {
             sb.append("-正常场景");
-        }else{
+        } else {
             sb.append("-异常场景");
         }
         sb.append("\")\r\n");
@@ -197,12 +197,13 @@ public class GenerateTestScript {
                     sb.append(index);
                     sb.append(",");
                     index++;
-                } else if (!Arrays.asList(TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key) ) {
+                } else if (!Arrays.asList(TYPE).contains(key.getPresentableText()) && !PsiUtil.isEnum(key)) {
                     sb.append("final String");
                     sb.append(" ");
-                    if (PsiUtil.isCollection(key)){
+                    sb.append("req");
+                    if (PsiUtil.isCollection(key)) {
                         sb.append(subString(GenerateTestScript.subStringGeneric(key.getPresentableText())));
-                    }else{
+                    } else {
                         sb.append(subString(key.getPresentableText()));
                     }
                     sb.append(",");
@@ -212,13 +213,15 @@ public class GenerateTestScript {
         if (!EmptyUtils.isEmpty(dbList)) {
             for (String db : dbList) {
                 sb.append("final String ");
-                sb.append(subString(db));
+                sb.append("dbIns");
+                sb.append(subString(PsiUtil.subClassName(db)));
                 sb.append(",");
             }
         }
         if (!EmptyUtils.isEmpty(dbCheckList)) {
             for (String dbCheck : dbCheckList) {
                 sb.append("final String  ");
+                sb.append("dbChe");
                 sb.append(subString(dbCheck));
                 sb.append(",");
             }
@@ -235,6 +238,7 @@ public class GenerateTestScript {
                 sb.append("my");
                 sb.append(req);
                 sb.append("= CSVUtil.requestfromCSV(");
+                sb.append("req");
                 sb.append(subString(req));
                 sb.append(",");
                 sb.append(req);
@@ -271,11 +275,12 @@ public class GenerateTestScript {
         sb.append("\r\n");
         for (String db : dbList) {
             sb.append("\t\tsuper.insertDB(");
-            sb.append(subString(db));
+            sb.append("dbIns");
+            sb.append(subString(PsiUtil.subClassName(db)));
             sb.append(",");
-            sb.append(subString(db));
+            sb.append(subString(PsiUtil.subClassName(db)));
             sb.append("Mapper,");
-            sb.append(db);
+            sb.append(PsiUtil.subClassName(db));
             sb.append(".class);");
             sb.append("\r\n");
         }

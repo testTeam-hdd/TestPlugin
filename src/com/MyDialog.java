@@ -40,6 +40,7 @@ public class MyDialog extends JDialog {
     private JTextField author;
     private JButton ObjectCheckButton;
     private JPanel ObjectCheckJButton;
+    private JTextField module;
     private TestScript testScript = new TestScript();
     private DialogCallBack mCallBack;
     private CardLayout cardLayout = new CardLayout();
@@ -88,6 +89,7 @@ public class MyDialog extends JDialog {
                 testScript.setTestClass(testClass.getText().trim());
                 testScript.setTestMethod(testMethod.getText().trim());
                 testScript.setAuthor(author.getText().trim());
+                testScript.setModule(module.getText().trim());
                 testScript.setIsNormal(normal.isSelected() ? true : false);
                 testScript.setDbCheckList(getButtonList(dbCheckJButton));
                 testScript.setDbList(getButtonList(dbInsertJButton));

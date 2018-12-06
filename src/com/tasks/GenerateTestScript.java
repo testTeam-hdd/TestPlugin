@@ -299,7 +299,7 @@ public class GenerateTestScript {
                 sb.append(response);
                 sb.append(" ");
                 sb.append("my");
-                sb.append(response);
+                sb.append(PsiUtil.isGeneric(response.toString())?PsiUtil.getGenericType(response.toString()):response);
                 sb.append(" ");
                 sb.append(" = ");
             }
@@ -353,6 +353,7 @@ public class GenerateTestScript {
         }
         for (String dbCheck : dbCheckList) {
             sb.append("\t\t\tAssert.assertTrue(DBcheckUtil.DBCheckWithoutCondition(");
+            sb.append("dbChe");
             sb.append(subString(dbCheck));
             sb.append(", index + 1), \"DB结果校验失败\");\r\n");
         }

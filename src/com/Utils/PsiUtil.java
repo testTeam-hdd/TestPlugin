@@ -24,6 +24,7 @@ public class PsiUtil {
         if (PsiUtil.isAllPackageName(className)) {
             packageName = className;
         }
+        className = isGeneric(className)?getGenericType(className):className;
 
         if (EmptyUtils.isEmpty(packageName)) {
             PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
@@ -71,6 +72,7 @@ public class PsiUtil {
     //获取包名
     public static String getPackageName(Project project, String className) {
         String packageName = null;
+        className = isGeneric(className)?getGenericType(className):className;
         PsiFile[] psiFiles = FilenameIndex.getFilesByName(project, className + ".class", GlobalSearchScope.allScope(project));
         if (psiFiles.length == 0) {
             psiFiles = FilenameIndex.getFilesByName(project, className + ".java", GlobalSearchScope.allScope(project));
@@ -208,6 +210,23 @@ public class PsiUtil {
 
         }
         return packageName;
+    }
+
+    //判断类名是否是泛型
+    public static boolean isGeneric(String className){
+        boolean isGeneric = false;
+        if (className.contains("<")){
+            isGeneric = true;
+        }
+        return isGeneric;
+    }
+
+    //获取泛型类型
+    public static String getGenericType(String className){
+        if (className.contains("<")){
+            className = className.substring(0,className.lastIndexOf("<"));
+        }
+        return className;
     }
 }
 //获取类型的包路径

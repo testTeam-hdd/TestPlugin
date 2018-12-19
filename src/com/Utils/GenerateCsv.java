@@ -58,9 +58,9 @@ public class GenerateCsv {
      */
     private void getPath() {
         if (isNormal) {
-            path = path + "normal/" + testMethodName + "/";
+            path = path + "normal/" + GenerateTestScript.subStringToUc(testMethodName) + "/";
         } else {
-            path = path + "funcExp/" + testMethodName + "/";
+            path = path + "funcExp/" + GenerateTestScript.subStringToUc(testMethodName) + "/";
         }
     }
 

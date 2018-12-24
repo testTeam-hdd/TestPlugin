@@ -3,6 +3,7 @@ package com;
 import com.Utils.EmptyUtils;
 import com.Utils.GenerateCsv;
 import com.Utils.PsiUtil;
+import com.Utils.TestSuite;
 import com.Vo.CsvElementVo;
 import com.Vo.TestScript;
 import com.exception.PluginErrorMsg;
@@ -10,7 +11,6 @@ import com.exception.PluginRunTimeException;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
@@ -27,8 +27,6 @@ import java.util.List;
 public class GenerateTestCaseAction extends AnAction {
 
     private Project project;
-
-    private Module module;
 
     //包名
     private String packageName = "src.test.java.com.miz.autotest.servicetest.";
@@ -66,12 +64,12 @@ public class GenerateTestCaseAction extends AnAction {
                 }
                 new GenerateCsv(generateCsv(testScript), testScript, project);
                 generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
+                TestSuite.AddTestCaseToSuite(testScript, project);
                 Messages.showInfoMessage("脚本生成成功!", "result");
                 dialog.dispose();
             }
         });
         myDialog.setVisible(true);
-
     }
 
     /**

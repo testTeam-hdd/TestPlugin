@@ -481,9 +481,9 @@ public class GenerateCsv {
     public static String getCsvPath(String csvName, TestScript testScript) {
         String path = "testers/";
         if (testScript.getIsNormal()) {
-            path = path + "normal/" + testScript.getTestMethod() + "/" + csvName + ".csv";
+            path = path + "normal/" + GenerateTestScript.subStringToUc(testScript.getTestMethod()) + "/" + csvName + ".csv";
         } else {
-            path = path + "funcExp/" + testScript.getTestMethod() + "/" + csvName + ".csv";
+            path = path + "funcExp/" + GenerateTestScript.subStringToUc(testScript.getTestMethod()) + "/" + csvName + ".csv";
         }
         return path;
     }

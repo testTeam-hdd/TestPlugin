@@ -1,5 +1,6 @@
-package com;
+package com.tasks;
 
+import com.MyDialog;
 import com.Utils.EmptyUtils;
 import com.Utils.GenerateCsv;
 import com.Utils.PsiUtil;
@@ -15,8 +16,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
-import com.tasks.GenerateTestScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,7 @@ public class GenerateTestCaseAction extends AnAction {
 
     //包名
     private String packageName = "src.test.java.com.miz.autotest.servicetest.";
+
     private String csvPath = "/src/test/resources/testers/";
 
     @Override
@@ -52,7 +54,7 @@ public class GenerateTestCaseAction extends AnAction {
     private void generate() {
         MyDialog myDialog = new MyDialog(new MyDialog.DialogCallBack() {
             @Override
-            public void ok(TestScript testScript, MyDialog dialog) {
+            public void ok(TestScript testScript, MyDialog dialog) throws IOException {
                 getScriptParem(testScript);
                 String path = getAppPath(testScript);
                 GenerateTestScript generateTestScript = new GenerateTestScript(testScript);

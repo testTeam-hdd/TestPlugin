@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +98,8 @@ public class MyDialog extends JDialog {
                 mCallBack.ok(testScript, this);
             }catch (PluginRunTimeException e){
                 Messages.showInfoMessage(e.getErrorMsg(), "提示");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -161,7 +164,7 @@ public class MyDialog extends JDialog {
     }
 
     public interface DialogCallBack {
-        void ok(TestScript testScript,MyDialog myDialog);
+        void ok(TestScript testScript,MyDialog myDialog) throws IOException;
     }
 
     private void myUpdateUI() {

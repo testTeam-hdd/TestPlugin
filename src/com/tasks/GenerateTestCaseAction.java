@@ -142,6 +142,13 @@ public class GenerateTestCaseAction extends AnAction {
         if (!Arrays.asList(GenerateTestScript.TYPE).contains(returnType.getPresentableText()) && !PsiUtil.isEnum(returnType)) {
             if (PsiUtil.isCollection(returnType)) {
                 packageName = "java.util.*";
+            } else if (PsiUtil.isGeneric(returnType.getPresentableText())) {
+                String outer = PsiUtil.getGenericTypeOuter(returnType.getPresentableText());
+                String inner = PsiUtil.getGenericType(returnType.getPresentableText());
+                packageName = PsiUtil.getPackageName(project, outer);
+                packageName = packageName + "." + outer + ";\n";
+                packageName = packageName + "import " + PsiUtil.getPackageName(project, inner);
+                packageName = packageName + "." + inner;
             } else {
                 packageName = PsiUtil.getPackageName(project, returnType.getPresentableText());
                 packageName = packageName + "." + returnType.getPresentableText();
@@ -287,19 +294,19 @@ public class GenerateTestCaseAction extends AnAction {
         return csvElementVo;
     }
 
-    private TestScript getScriptParem(TestScript testScript)throws PluginRunTimeException {
+    private TestScript getScriptParem(TestScript testScript) throws PluginRunTimeException {
 //        try {
-            testScript.setResponsePackageName(getResponsePackageName(testScript));
-            testScript.setRequestPackageName(getRequestPackageName(testScript));
-            testScript.setPackageName(packageName.substring(14) + testScript.getTestClass());
-            testScript.setTestPackageName(getTestClassPackage(testScript));
-            String response = PsiUtil.getMethodRetureType(project, testScript.getTestClass(), testScript.getTestMethod()).getPresentableText();
-            testScript.setResponse(response.equals("void") ? null : response);
-            testScript.setAllRequestParem(PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod()));
-            testScript.setRequest(getRequestObject(testScript));
-            testScript.setDbMapperPackageName(getDbMapperPackage(testScript));
-            testScript.setDbPackageName(getDbPackage(testScript));
-            testScript.setTableName(getTableName(testScript));
+        testScript.setResponsePackageName(getResponsePackageName(testScript));
+        testScript.setRequestPackageName(getRequestPackageName(testScript));
+        testScript.setPackageName(packageName.substring(14) + testScript.getTestClass());
+        testScript.setTestPackageName(getTestClassPackage(testScript));
+        String response = PsiUtil.getMethodRetureType(project, testScript.getTestClass(), testScript.getTestMethod()).getPresentableText();
+        testScript.setResponse(response.equals("void") ? null : response);
+        testScript.setAllRequestParem(PsiUtil.getMethodPrame(project, testScript.getTestClass(), testScript.getTestMethod()));
+        testScript.setRequest(getRequestObject(testScript));
+        testScript.setDbMapperPackageName(getDbMapperPackage(testScript));
+        testScript.setDbPackageName(getDbPackage(testScript));
+        testScript.setTableName(getTableName(testScript));
 //        } catch (PluginRunTimeException e) {
 //            Messages.showInfoMessage(e.getErrorMsg(), "提示");
 //        }

@@ -110,6 +110,7 @@ public class GenerateTestScript {
             sb.append(responsePackageName);
             sb.append(";");
         }
+        sb.append("\r\n");
         if (!EmptyUtils.isEmpty(request)) {
             sb.append("\r\n");
             sb.append("import com.miz.testframework.util.CSVUtil;");
@@ -123,6 +124,7 @@ public class GenerateTestScript {
                 sb.append("\r\n");
             }
         }
+        sb.append("\r\n");
         sb.append("/**");
         sb.append("\r\n");
         sb.append(" * @author ");
@@ -343,7 +345,8 @@ public class GenerateTestScript {
             sb.append("response,");
             if (!Arrays.asList(TYPE).contains(response)) {
                 sb.append("my");
-                sb.append(response);
+                sb.append(PsiUtil.isGeneric(response.toString())?PsiUtil.getGenericType(response.toString()):response);
+                sb.append(".getData");
             } else {
                 sb.append("myResponse");
             }

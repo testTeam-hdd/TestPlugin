@@ -55,20 +55,27 @@ public class GenerateTestCaseAction extends AnAction {
         MyDialog myDialog = new MyDialog(new MyDialog.DialogCallBack() {
             @Override
             public void ok(TestScript testScript, MyDialog dialog) throws IOException {
-                getScriptParem(testScript);
-                String path = getAppPath(testScript);
-                GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
-                String testClassName = null;
-                if (testScript.getIsNormal()) {
-                    testClassName = testScript.getTestMethod() + "NormalTest.java";
-                } else {
-                    testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
+                //生成脚本生成所需的参数
+                try {
+                    getScriptParem(testScript);
+                    String path = getAppPath(testScript);
+                    GenerateTestScript generateTestScript = new GenerateTestScript(testScript);
+                    String testClassName = null;
+                    if (testScript.getIsNormal()) {
+                        testClassName = testScript.getTestMethod() + "NormalTest.java";
+                    } else {
+                        testClassName = testScript.getTestMethod() + "FuncExceptionTest.java";
+                    }
+                    new GenerateCsv(generateCsv(testScript), testScript, project);
+                    generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
+                    TestSuite.AddTestCaseToSuite(testScript, project);
+                    Messages.showInfoMessage("脚本生成成功!", "result");
+                    dialog.dispose();
+                } catch (PluginRunTimeException e) {
+                    Messages.showInfoMessage(e.getErrorMsg(), "提示");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                new GenerateCsv(generateCsv(testScript), testScript, project);
-                generateTestScript.writeToFile(path, GenerateTestScript.subStringToUc(testClassName), project);
-                TestSuite.AddTestCaseToSuite(testScript, project);
-                Messages.showInfoMessage("脚本生成成功!", "result");
-                dialog.dispose();
             }
         });
         myDialog.setVisible(true);
@@ -280,8 +287,8 @@ public class GenerateTestCaseAction extends AnAction {
         return csvElementVo;
     }
 
-    private TestScript getScriptParem(TestScript testScript) {
-        try {
+    private TestScript getScriptParem(TestScript testScript)throws PluginRunTimeException {
+//        try {
             testScript.setResponsePackageName(getResponsePackageName(testScript));
             testScript.setRequestPackageName(getRequestPackageName(testScript));
             testScript.setPackageName(packageName.substring(14) + testScript.getTestClass());
@@ -293,9 +300,9 @@ public class GenerateTestCaseAction extends AnAction {
             testScript.setDbMapperPackageName(getDbMapperPackage(testScript));
             testScript.setDbPackageName(getDbPackage(testScript));
             testScript.setTableName(getTableName(testScript));
-        } catch (PluginRunTimeException e) {
-            Messages.showInfoMessage(e.getErrorMsg(), "提示");
-        }
+//        } catch (PluginRunTimeException e) {
+//            Messages.showInfoMessage(e.getErrorMsg(), "提示");
+//        }
         return testScript;
     }
 

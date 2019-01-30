@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class GenerateTestScript {
 
-    public static final String[] TYPE = {"byte", "int", "double", "char", "float", "long", "Long", "short", "boolean", "String", "void"};
+    public static final String[] TYPE = {"byte","Byte", "int","Integer","Double", "double", "char","Character", "float","Float", "long", "Long", "short","Short", "boolean","Boolean", "String", "void"};
 
     private String testClass;//测试类
     private String testMethod;//测试方法
@@ -41,7 +41,6 @@ public class GenerateTestScript {
     private Date date;//日期
     private boolean isNormal;
     private String centent;
-
     public GenerateTestScript(TestScript testScript) {
         this.dbCheckList = testScript.getDbCheckList();
         this.dbList = testScript.getDbList();

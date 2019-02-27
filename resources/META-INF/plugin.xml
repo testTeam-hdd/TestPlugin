@@ -38,6 +38,11 @@
             <action id="addTestConfig" class="com.tasks.GenerateTestConfig" text="测试框架一键配置" description="生成所有框架所需配置"
                     icon="/icon/test.png">
             </action>
+
+            <action id="editScrypt" class="com.tasks.EditScryptAction" text="脚本编辑" description="右键Action">
+                <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="ReplaceInPath"/>
+            </action>
+
         </group>
     </actions>
 

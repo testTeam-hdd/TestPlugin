@@ -12,6 +12,7 @@ public enum PluginErrorMsg {
     TEST_METHOD_IS_EMPTY("测试方法不能为空"),
     TEST_DESCRIPTION_IS_EMPTY("脚本描述不能为空"),
     TEST_AUTHOR_IS_EMPTY("作者不能为空"),
+    TEST_CLASS_ERROR("当前类不是测试类"),
     DBENTITY_CLASS_NOT_FIND("DBInsert对象错误，请输入该数据表对应的实体类"),
     DBCHECKBO_CLASS_NOT_FIND("DBCheck对象错误，请输入该数据表对应的BO对象");
 

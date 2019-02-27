@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class TestSuite {
 
-    private static String testClassPath = "com.miz.autotest.servicetest.";
+    private static String baseClassPath = "com.miz.autotest.servicetest.";
 
     private static String testClassType = "NormalTest";
 
@@ -34,7 +34,7 @@ public class TestSuite {
 
     public static void AddTestCaseToSuite(TestScript testScript, Project project) throws IOException {
         boolean isFirst = false;
-        getpath(testScript);
+        String testClassPath = getpath(testScript);
         getFilePath(project);
         File floder = new File(filePath);
         if (!floder.exists()) {
@@ -63,7 +63,7 @@ public class TestSuite {
             e.printStackTrace();
         }
         Element test = document.createElement("test");
-        test.setAttribute("name", "test");
+        test.setAttribute("name", testScript.getTestScriptDescription());
         Element classes = document.createElement("classes");
         Element aclass = document.createElement("class");
         aclass.setAttribute("name", testClassPath);
@@ -87,9 +87,10 @@ public class TestSuite {
         }
     }
 
-    private static void getpath(TestScript testScript) {
+    private static String getpath(TestScript testScript) {
         getTestClassType(testScript.getIsNormal());
-        testClassPath = String.format("%s%s%s%s%s", testClassPath, testScript.getTestClass(), ".", GenerateTestScript.subStringToUc(testScript.getTestMethod()), testClassType);
+        String testClassPath = String.format("%s%s%s%s%s", baseClassPath, testScript.getTestClass(), ".", GenerateTestScript.subStringToUc(testScript.getTestMethod()), testClassType);
+        return  testClassPath;
     }
 
     private static void getTestClassType(boolean isNormal) {

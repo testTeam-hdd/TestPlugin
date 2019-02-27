@@ -2,13 +2,11 @@ package com;
 
 import com.Utils.AddObjectJPanel;
 import com.Utils.EmptyUtils;
-import com.Vo.RequestParam;
 import com.Vo.TestScript;
 import com.exception.PluginErrorMsg;
 import com.exception.PluginRunTimeException;
 import com.intellij.openapi.ui.Messages;
 
-import javax.management.RuntimeErrorException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -16,9 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MyDialog extends JDialog {
     private JPanel contentPane;

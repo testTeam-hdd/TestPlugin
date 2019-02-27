@@ -163,8 +163,12 @@ public class GenerateTestCaseAction extends AnAction {
     private String getTestClassPackage(TestScript testScript) {
         String packageName = null;
         try {
-            packageName = PsiUtil.getPackageName(project, testScript.getTestClass());
-            packageName = packageName + "." + testScript.getTestClass();
+            if (PsiUtil.isAllPackageName(testScript.getTestClass())){
+                packageName = testScript.getTestClass();
+            }else{
+                packageName = PsiUtil.getPackageName(project, testScript.getTestClass());
+                packageName = packageName + "." + testScript.getTestClass();
+            }
         } catch (PluginRunTimeException e) {
             throw new PluginRunTimeException(PluginErrorMsg.TEST_CLASS_NOT_FIND);
         }

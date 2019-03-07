@@ -1,13 +1,19 @@
 package com;
 
-import com.Utils.AddCsvJPanel;
-import com.Utils.CSVParseUtil;
+import com.Utils.*;
 import com.Vo.CsvVO;
+import com.exception.PluginErrorMsg;
+import com.exception.PluginRunTimeException;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.table.JBTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -16,34 +22,40 @@ public class ScryptEdit extends JDialog {
     private JPanel contentPane;
     private JPanel csvContent;
     private JPanel csvName;
-    private JPanel mainFile;
-    private JPanel preparationFile;
-    private JPanel checkFile;
     private JTabbedPane tabbedPane1;
+    private JTree jTree;
+    private JComboBox comboBox1;
     private CardLayout cardLayout;
+
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode("测试数据");
+    DefaultMutableTreeNode mainCsv = new DefaultMutableTreeNode("主测试文件");
+    DefaultMutableTreeNode dataPreparation = new DefaultMutableTreeNode("测试数据");
+    TreeModel treeModel = new DefaultTreeModel(root);
 //    private JButton buttonOK;
 //    private JButton buttonCancel;
 
-    public ScryptEdit(List<CsvVO> list) {
+    public ScryptEdit(List<CsvVO> list, String csvPath, Project project) {
         setContentPane(contentPane);
         setModal(true);
-        setSize(1500, 1000);
+        setSize(1500, 1100);
         setTitle("编辑测试数据");
-        mainFile.setLayout(new FlowLayout());
-        checkFile.setLayout(new FlowLayout());
-        preparationFile.setLayout(new FlowLayout());
         cardLayout = new CardLayout();
-//        csvName.setLayout(new BoxLayout(csvName, BoxLayout.Y_AXIS));
         csvContent.setLayout(cardLayout);
+        setJcomboBox(csvPath, project);
+        initTree(list);
         for (CsvVO csvVO : list) {
-            if (csvVO.getCsvName().contains("Test.")) {
-                addJText(csvVO, mainFile);
-            } else if (csvVO.getCsvName().contains("check")) {
-                addJText(csvVO, checkFile);
-            } else {
-                addJText(csvVO, preparationFile);
-            }
+            addTable(csvVO);
         }
+        jTree.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) jTree.getLastSelectedPathComponent();//返回最后选定的节点
+                cardLayout.show(csvContent, selectedNode.toString());
+                contentPane.validate();
+                contentPane.repaint();
+                contentPane.revalidate();
+            }
+        });
+
 //        getRootPane().setDefaultButton(buttonOK);
 
 //        buttonOK.addActionListener(new ActionListener() {
@@ -74,31 +86,6 @@ public class ScryptEdit extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    /**
-     * 根据csv文件数量添加Jtext,并添加单击监控事件，单击则展示内容
-     */
-    private void addJText(CsvVO csvVO, Container container) {
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        AddCsvJPanel addCsvJPanel = new AddCsvJPanel(container, 150, 30, csvVO.getCsvName());
-        container.add(addCsvJPanel);
-        addTable(csvVO);
-        Component[] components = addCsvJPanel.getComponents();
-
-        for (Component component : components) {
-            if (component instanceof JTextField) {
-                component.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        cardLayout.show(csvContent, csvVO.getCsvName());
-                        contentPane.revalidate();
-
-                    }
-                });
-            }
-
-        }
-        container.revalidate();
-    }
 
     private void addTable(CsvVO csvVO) {
         DefaultTableModel defaultTableModel = new DefaultTableModel(csvVO.getRowNum(), csvVO.getColNum());
@@ -142,6 +129,81 @@ public class ScryptEdit extends JDialog {
 
     }
 
+    private void setJcomboBox(String csvPath, Project project) {
+        comboBox1.addItem("DB数据插入");
+        comboBox1.addItem("DB数据校验");
+        comboBox1.addItem("出入参对象");
+        comboBox1.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String text = (String) comboBox1.getSelectedItem();
+                    switch (text) {
+                        case "DB数据插入":
+                            addDbinsertCsv(csvPath, project);
+                            break;
+                        case "DB数据校验":
+                            addDbcheckCsv(csvPath, project);
+                            break;
+                        case "出入参对象":
+                            addObjectCsv(csvPath, project);
+                            break;
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void addDbcheckCsv(String csvpath, Project project) {
+        String tableName = JOptionPane.showInputDialog(this, "输入需要校验的数据库表名", "新增数据校验文件", JOptionPane.PLAIN_MESSAGE);
+        if (EmptyUtils.isNotEmpty(tableName)) {
+            String filename = "dbCheck" + "_" + tableName + ".csv";
+            csvpath = csvpath + "/"+filename;
+            GenerateCsv.createDBCheckTemplateCsv(tableName, csvpath, project);
+            refresh(csvpath,filename);
+        } else {
+            throw new PluginRunTimeException(PluginErrorMsg.INPUT_IS_EMPTY);
+        }
+    }
+
+    private void addDbinsertCsv(String csvpath, Project project) {
+        String classname = JOptionPane.showInputDialog(this, "输入需要插入的表对应的实体类", "新增数据准备文件", JOptionPane.PLAIN_MESSAGE);
+        if (EmptyUtils.isNotEmpty(classname)) {
+            String filename = "dbInsert" + "_" + classname + ".csv";
+            csvpath = csvpath + "/"+filename;
+            GenerateCsv.createTransverseCsvForCheck(PsiUtil.getPsiClass(project, classname), csvpath);
+            refresh(csvpath,filename);
+        } else {
+            throw new PluginRunTimeException(PluginErrorMsg.INPUT_IS_EMPTY);
+        }
+    }
+
+    private void addObjectCsv(String csvpath, Project project) {
+        String classname = JOptionPane.showInputDialog(this, "输入需要需要生成对象的类名", "新增数据校验文件", JOptionPane.PLAIN_MESSAGE);
+        if (EmptyUtils.isNotEmpty(classname)) {
+            String filename = "objectCheck" + "_" + classname + ".csv";
+            csvpath = csvpath + "/"+filename;
+            GenerateCsv.createVerticalCsvForCheck(PsiUtil.getPsiClass(project, classname), csvpath);
+            refresh(csvpath,filename);
+        } else {
+            throw new PluginRunTimeException(PluginErrorMsg.INPUT_IS_EMPTY);
+        }
+    }
+
+    private void refresh(String path,String filename){
+        Messages.showInfoMessage("添加成功", "提示");
+        CsvVO csvVO = FileUtil.getOneFileContent(path,filename);
+        DefaultMutableTreeNode csvName = new DefaultMutableTreeNode(csvVO.getCsvName());
+        dataPreparation.add(csvName);
+        addTable(csvVO);
+        jTree.validate();
+        jTree.repaint();
+        jTree.revalidate();
+        this.validate();
+        contentPane.validate();
+    }
+
     private JPopupMenu createPopupMenu() {
         JPopupMenu m_popupMenu = new JPopupMenu();
 
@@ -162,10 +224,37 @@ public class ScryptEdit extends JDialog {
         dispose();
     }
 
+    private void initTree(List<CsvVO> list) {
+        for (CsvVO csvVO : list) {
+            DefaultMutableTreeNode csvName = new DefaultMutableTreeNode(csvVO.getCsvName());
+
+            if (csvVO.getCsvName().contains("Test.")) {
+                mainCsv.add(csvName);
+            } else {
+                dataPreparation.add(csvName);
+            }
+        }
+        root.add(mainCsv);
+        root.add(dataPreparation);
+
+        jTree.setModel(treeModel);
+    }
+
+//    private boolean isCheck(String csvName) {
+//        Boolean ischeckFile = true;
+//        if (!csvName.contains("che")||!csvName.contains("res")) {
+//            ischeckFile = false;
+//        }
+//        return ischeckFile;
+//    }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
 //    public static void main(String[] args) {

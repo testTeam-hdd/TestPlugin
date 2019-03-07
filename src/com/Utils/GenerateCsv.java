@@ -35,6 +35,67 @@ public class GenerateCsv {
     private String path;
     private String testMethodName;//测试方法name
 
+
+    public List<PsiClass> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<PsiClass> requests) {
+        this.requests = requests;
+    }
+
+    public PsiClass getResponse() {
+        return response;
+    }
+
+    public void setResponse(PsiClass response) {
+        this.response = response;
+    }
+
+    public List<PsiClass> getDbInserts() {
+        return dbInserts;
+    }
+
+    public void setDbInserts(List<PsiClass> dbInserts) {
+        this.dbInserts = dbInserts;
+    }
+
+    public List<String> getDbChecks() {
+        return dbChecks;
+    }
+
+    public void setDbChecks(List<String> dbChecks) {
+        this.dbChecks = dbChecks;
+    }
+
+    public List<PsiClass> getObjectChecks() {
+        return objectChecks;
+    }
+
+    public void setObjectChecks(List<PsiClass> objectChecks) {
+        this.objectChecks = objectChecks;
+    }
+
+    public boolean isNormal() {
+        return isNormal;
+    }
+
+    public void setNormal(boolean normal) {
+        isNormal = normal;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getTestMethodName() {
+        return testMethodName;
+    }
+
+    public void setTestMethodName(String testMethodName) {
+        this.testMethodName = testMethodName;
+    }
+
     public GenerateCsv(CsvElementVo csvElementVo, TestScript testScript, Project project) {
         this.requests = csvElementVo.getRequest();
         this.response = csvElementVo.getResponse();
@@ -293,8 +354,14 @@ public class GenerateCsv {
         } finally {
             conn.close();
         }
-        File file = new File(path);
+
         try {
+            File file = new File(path);
+            File fileParent = file.getParentFile();
+            if (!fileParent.exists()) {
+                fileParent.mkdirs();
+            }
+            file.createNewFile();
             //初始化写入文件
             OutputStream outputStream = null;
             outputStream = new FileOutputStream(file);

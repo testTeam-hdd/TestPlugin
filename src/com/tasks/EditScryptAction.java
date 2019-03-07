@@ -2,6 +2,8 @@ package com.tasks;
 
 import com.ScryptEdit;
 import com.Utils.CSVParseUtil;
+import com.Utils.DataSupply;
+import com.Utils.FileUtil;
 import com.Vo.CsvVO;
 import com.exception.PluginErrorMsg;
 import com.exception.PluginRunTimeException;
@@ -35,12 +37,16 @@ public class EditScryptAction extends AnAction {
      * 初始化Dialog
      */
     private void edit(AnActionEvent e) {
-        String className = getClassName(e);
-        String csvPath = getCsvPath(className);
-        List<CsvVO> csvContentList = getFileContent(csvPath);
-        ScryptEdit scryptEdit = new ScryptEdit(csvContentList);
-        String a = "";
-        scryptEdit.setVisible(true);
+        String csvPath = null;
+        try {
+            String className = getClassName(e);
+            csvPath = getCsvPath(className);
+            List<CsvVO> csvContentList = FileUtil.getFileContent(csvPath);
+            ScryptEdit scryptEdit = new ScryptEdit(csvContentList, csvPath, project);
+            scryptEdit.setVisible(true);
+        } catch (PluginRunTimeException e1) {
+            Messages.showInfoMessage(e1.getErrorMsg(), "提示");
+        }
     }
 
     /**
@@ -55,6 +61,8 @@ public class EditScryptAction extends AnAction {
             if (file != null) {
                 className = file.getName();
             }
+        } else {
+            throw new PluginRunTimeException(PluginErrorMsg.TEST_CLASS_ERROR);
         }
 
         return className;
@@ -70,10 +78,10 @@ public class EditScryptAction extends AnAction {
 
         if (className.contains("Normal")) {
             csvDirName = className.substring(0, className.lastIndexOf("Normal"));
-        } else if (className.contains("FuncException")){
+        } else if (className.contains("FuncException")) {
             isNormal = false;
             csvDirName = className.substring(0, className.lastIndexOf("FuncException"));
-        }else{
+        } else {
             throw new PluginRunTimeException(PluginErrorMsg.TEST_CLASS_ERROR);
         }
         if (isNormal) {
@@ -85,42 +93,7 @@ public class EditScryptAction extends AnAction {
         return path;
     }
 
-    /**
-     * 读取一个路径下所有文件的文件内容
-     */
-    private List<CsvVO> getFileContent(String path) {
-        List<CsvVO> csvList = new ArrayList<>();
-        CSVParseUtil csvParseUtil = new CSVParseUtil();
-        File file = new File(path);
-        File[] files = file.listFiles();
-        for (File content : files) {
-            List<String> list = new ArrayList<>();
-            CsvVO csvVO = new CsvVO();
-            BufferedReader br;
-            int rowNum;
-            int colNum;
 
-            try {
-                InputStream is = new FileInputStream(content);
-                InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-                br = new BufferedReader(isr);
-                String stemp;
-                while ((stemp = br.readLine()) != null) {
-                    list.add(stemp);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            colNum = csvParseUtil.getColNum(list);
-            rowNum = csvParseUtil.getRowNum(list);
-            csvVO.setRowNum(rowNum);
-            csvVO.setColNum(colNum);
-            csvVO.setCsvName(content.getName());
-            csvVO.setContent(list);
-            csvList.add(csvVO);
-        }
-        return csvList;
-    }
 
     @Override
     public void update(AnActionEvent event) {
@@ -133,6 +106,12 @@ public class EditScryptAction extends AnAction {
         VirtualFile file = DataKeys.VIRTUAL_FILE.getData(dataContext);
         return file == null ? null : file.getExtension();
 
+    }
+
+    public static void main(String[] args) {
+        if (1 + 1 == 2) {
+            System.out.println("");
+        }
     }
 
     /**

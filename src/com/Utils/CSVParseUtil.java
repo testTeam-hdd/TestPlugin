@@ -69,16 +69,21 @@ public class CSVParseUtil {
      * @return
      */
     public String getString(List<String> list,int row, int col) {
-        String temp = null;
-        int colnum = this.getColNum(list);
-        if (colnum > 1) {
-            temp = list.get(row).toString().split(",")[col];
-        } else if(colnum == 1){
-            temp = list.get(row).toString();
-        } else {
-            temp = null;
+
+        try {
+            String temp = null;
+            int colnum = this.getColNum(list);
+            if (colnum > 1) {
+                temp = list.get(row).toString().split(",")[col];
+            } else if(colnum == 1){
+                temp = list.get(row).toString();
+            } else {
+                temp = null;
+            }
+            return temp;
+        } catch (Exception e) {
+            return null;
         }
-        return temp;
     }
 
     public void CsvClose()throws Exception{
